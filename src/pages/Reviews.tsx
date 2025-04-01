@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -8,6 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Star, Search, Calendar, Download, MessageCircle, ThumbsUp, ThumbsDown, Meh } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import ReviewResponseDialog from '@/components/reviews/ReviewResponseDialog';
 
 // Mock data for reviews
 const mockReviews = [
@@ -62,9 +64,12 @@ const Reviews = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [ratingFilter, setRatingFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedReview, setSelectedReview] = useState<null | any>(null);
+  const [reviews, setReviews] = useState(mockReviews);
 
   // Filter reviews based on search query and filters
-  const filteredReviews = mockReviews.filter(review => {
+  const filteredReviews = reviews.filter(review => {
     // Filter by search query
     const matchesSearch = 
       review.customer.toLowerCase().includes(searchQuery.toLowerCase()) || 
@@ -78,6 +83,19 @@ const Reviews = () => {
     // For this example, we'll just apply the search and rating filters
     return matchesSearch && matchesRating;
   });
+
+  // Function to handle opening the response dialog
+  const handleOpenResponseDialog = (review: any) => {
+    setSelectedReview(review);
+    setIsDialogOpen(true);
+  };
+
+  // Function to handle responding to a review
+  const handleRespond = (id: number, response: string) => {
+    setReviews(reviews.map(review => 
+      review.id === id ? { ...review, responded: true } : review
+    ));
+  };
 
   // Function to render stars based on rating
   const renderStars = (rating: number) => {
@@ -212,6 +230,7 @@ const Reviews = () => {
                             variant={review.responded ? "outline" : "default"} 
                             size="sm"
                             className="gap-2"
+                            onClick={() => handleOpenResponseDialog(review)}
                           >
                             <MessageCircle size={14} />
                             {review.responded ? "Respondida" : "Responder"}
@@ -248,6 +267,7 @@ const Reviews = () => {
                           variant={review.responded ? "outline" : "default"} 
                           size="sm"
                           className="gap-2"
+                          onClick={() => handleOpenResponseDialog(review)}
                         >
                           <MessageCircle size={14} />
                           {review.responded ? "Respondida" : "Responder"}
@@ -259,6 +279,14 @@ const Reviews = () => {
               </div>
             </TabsContent>
           </Tabs>
+
+          {/* Response Dialog */}
+          <ReviewResponseDialog 
+            isOpen={isDialogOpen}
+            onClose={() => setIsDialogOpen(false)}
+            review={selectedReview}
+            onRespond={handleRespond}
+          />
         </div>
       </main>
       
