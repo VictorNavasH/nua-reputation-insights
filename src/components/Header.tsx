@@ -22,10 +22,11 @@ const Header = () => {
       <div className="flex items-center space-x-12">
         {/* Logo and title */}
         <div className="flex items-center">
-          <div className="bg-gradient-to-r from-[#02B1C4] to-[#FF4797] text-white font-bold text-xl px-3 py-2 rounded-md">
-            NÜA
-          </div>
-          <h1 className="ml-3 font-semibold text-[#2F2F4C] text-xl">Smart Reputation</h1>
+          <img 
+            src="/lovable-uploads/c498e84d-246f-473c-9083-d0e6c74beabf.png" 
+            alt="NÜA SMART RESTAURANT" 
+            className="h-8" 
+          />
         </div>
 
         {/* Navigation */}
