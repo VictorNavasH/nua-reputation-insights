@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -9,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
 import {
-  Google,
+  Search,
   Globe,
   MessagesSquare,
   Bell,
@@ -36,13 +35,11 @@ const Settings = () => {
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
   
-  // Handle logo upload
   const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
       setLogoFile(file);
       
-      // Create a preview
       const reader = new FileReader();
       reader.onloadend = () => {
         setLogoPreview(reader.result as string);
@@ -67,7 +64,6 @@ const Settings = () => {
               <TabsTrigger value="users">Usuarios</TabsTrigger>
             </TabsList>
             
-            {/* Connections Tab */}
             <TabsContent value="connections">
               <div className="grid gap-6">
                 <Card>
@@ -80,7 +76,7 @@ const Settings = () => {
                       <div className="flex items-center justify-between p-4 border rounded-lg">
                         <div className="flex items-center">
                           <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mr-3">
-                            <Google className="h-5 w-5 text-red-500" />
+                            <Search className="h-5 w-5 text-red-500" />
                           </div>
                           <div>
                             <h3 className="font-medium">Google Business Profile</h3>
@@ -145,7 +141,6 @@ const Settings = () => {
               </div>
             </TabsContent>
             
-            {/* Brand Tab */}
             <TabsContent value="brand">
               <Card>
                 <CardHeader>
@@ -272,7 +267,6 @@ const Settings = () => {
               </Card>
             </TabsContent>
             
-            {/* Notifications Tab */}
             <TabsContent value="notifications">
               <Card>
                 <CardHeader>
@@ -332,7 +326,6 @@ const Settings = () => {
               </Card>
             </TabsContent>
             
-            {/* Users Tab */}
             <TabsContent value="users">
               <Card>
                 <CardHeader>
@@ -341,7 +334,6 @@ const Settings = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    {/* List of users */}
                     <div className="border rounded-lg divide-y">
                       <div className="flex items-center justify-between p-4">
                         <div className="flex items-center">
@@ -398,7 +390,6 @@ const Settings = () => {
                       </div>
                     </div>
                     
-                    {/* Add new user */}
                     <Card className="border border-dashed bg-transparent shadow-none">
                       <CardContent className="p-6 flex flex-col items-center justify-center text-center">
                         <Users className="h-12 w-12 text-gray-400 mb-3" />
@@ -411,7 +402,6 @@ const Settings = () => {
                       </CardContent>
                     </Card>
                     
-                    {/* Role permissions */}
                     <Card>
                       <CardHeader className="pb-2">
                         <CardTitle className="text-base">Roles y permisos</CardTitle>
