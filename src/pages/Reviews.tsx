@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -63,7 +62,6 @@ const Reviews = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [ratingFilter, setRatingFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
-  const [viewType, setViewType] = useState('table');
 
   // Filter reviews based on search query and filters
   const filteredReviews = mockReviews.filter(review => {
@@ -166,43 +164,86 @@ const Reviews = () => {
                 </Select>
                 
                 {/* View type toggle */}
-                <Tabs value={viewType} onValueChange={setViewType} className="w-full">
-                  <TabsList className="w-full">
-                    <TabsTrigger value="table" className="flex-1">Vista tabla</TabsTrigger>
-                    <TabsTrigger value="cards" className="flex-1">Vista tarjetas</TabsTrigger>
-                  </TabsList>
-                </Tabs>
+                <div className="w-full">
+                  {/* We keep the UI element but we'll use Tabs components below properly */}
+                  <div className="w-full bg-muted p-1 rounded-md h-10 flex items-center justify-center">
+                    <div className="flex-1 text-center">Vista tabla</div>
+                    <div className="flex-1 text-center">Vista tarjetas</div>
+                  </div>
+                </div>
               </div>
             </CardContent>
           </Card>
           
           {/* Reviews display */}
-          <TabsContent value="table" className="mt-0">
-            <Card>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Cliente</TableHead>
-                    <TableHead>Fecha</TableHead>
-                    <TableHead>Puntuación</TableHead>
-                    <TableHead>Reseña</TableHead>
-                    <TableHead>Sentimiento</TableHead>
-                    <TableHead>Acciones</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredReviews.map((review) => (
-                    <TableRow key={review.id}>
-                      <TableCell className="font-medium">{review.customer}</TableCell>
-                      <TableCell>{review.date}</TableCell>
-                      <TableCell>
-                        <div className="flex">{renderStars(review.rating)}</div>
-                      </TableCell>
-                      <TableCell className="max-w-xs">
-                        <p className="truncate">{review.review}</p>
-                      </TableCell>
-                      <TableCell>{renderSentiment(review.sentiment)}</TableCell>
-                      <TableCell>
+          <Tabs defaultValue="table">
+            <TabsList className="hidden">
+              <TabsTrigger value="table">Vista tabla</TabsTrigger>
+              <TabsTrigger value="cards">Vista tarjetas</TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="table">
+              <Card>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Cliente</TableHead>
+                      <TableHead>Fecha</TableHead>
+                      <TableHead>Puntuación</TableHead>
+                      <TableHead>Reseña</TableHead>
+                      <TableHead>Sentimiento</TableHead>
+                      <TableHead>Acciones</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {filteredReviews.map((review) => (
+                      <TableRow key={review.id}>
+                        <TableCell className="font-medium">{review.customer}</TableCell>
+                        <TableCell>{review.date}</TableCell>
+                        <TableCell>
+                          <div className="flex">{renderStars(review.rating)}</div>
+                        </TableCell>
+                        <TableCell className="max-w-xs">
+                          <p className="truncate">{review.review}</p>
+                        </TableCell>
+                        <TableCell>{renderSentiment(review.sentiment)}</TableCell>
+                        <TableCell>
+                          <Button 
+                            variant={review.responded ? "outline" : "default"} 
+                            size="sm"
+                            className="gap-2"
+                          >
+                            <MessageCircle size={14} />
+                            {review.responded ? "Respondida" : "Responder"}
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="cards">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {filteredReviews.map((review) => (
+                  <Card key={review.id} className="overflow-hidden">
+                    <CardContent className="p-4">
+                      <div className="flex justify-between items-start mb-2">
+                        <div>
+                          <h3 className="font-medium text-[#2F2F4C]">{review.customer}</h3>
+                          <p className="text-sm text-gray-500">{review.date}</p>
+                        </div>
+                        <div className="flex space-x-1">{renderStars(review.rating)}</div>
+                      </div>
+                      
+                      <p className="text-sm mb-4">{review.review}</p>
+                      
+                      <div className="flex justify-between items-center">
+                        <div className="flex items-center">
+                          <span className="mr-2">Sentimiento:</span>
+                          {renderSentiment(review.sentiment)}
+                        </div>
                         <Button 
                           variant={review.responded ? "outline" : "default"} 
                           size="sm"
@@ -211,48 +252,13 @@ const Reviews = () => {
                           <MessageCircle size={14} />
                           {review.responded ? "Respondida" : "Responder"}
                         </Button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="cards" className="mt-0">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {filteredReviews.map((review) => (
-                <Card key={review.id} className="overflow-hidden">
-                  <CardContent className="p-4">
-                    <div className="flex justify-between items-start mb-2">
-                      <div>
-                        <h3 className="font-medium text-[#2F2F4C]">{review.customer}</h3>
-                        <p className="text-sm text-gray-500">{review.date}</p>
                       </div>
-                      <div className="flex space-x-1">{renderStars(review.rating)}</div>
-                    </div>
-                    
-                    <p className="text-sm mb-4">{review.review}</p>
-                    
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center">
-                        <span className="mr-2">Sentimiento:</span>
-                        {renderSentiment(review.sentiment)}
-                      </div>
-                      <Button 
-                        variant={review.responded ? "outline" : "default"} 
-                        size="sm"
-                        className="gap-2"
-                      >
-                        <MessageCircle size={14} />
-                        {review.responded ? "Respondida" : "Responder"}
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </TabsContent>
+          </Tabs>
         </div>
       </main>
       
