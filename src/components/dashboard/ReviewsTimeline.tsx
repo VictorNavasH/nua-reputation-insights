@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
   LineChart, 
@@ -11,8 +11,8 @@ import {
   ResponsiveContainer,
   TooltipProps
 } from 'recharts';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AreaChart } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 // Sample data for last 30 days
 const last30DaysData = [
@@ -48,12 +48,19 @@ const last30DaysData = [
   { date: '30 Jun', reviews: 1 }
 ];
 
+// Sample data for last 3 months
+const last3MonthsData = [
+  { date: 'Abril', reviews: 34 },
+  { date: 'Mayo', reviews: 42 },
+  { date: 'Junio', reviews: 35 }
+];
+
 const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
   if (active && payload && payload.length) {
     return (
       <div className="bg-white p-3 shadow-md rounded-lg border border-gray-100">
         <p className="text-xs font-medium text-[#2F2F4C]">{label}</p>
-        <p className="text-sm font-semibold text-[#FF4797]">
+        <p className="text-sm font-semibold text-[#02B1C4]">
           {payload[0].value} {payload[0].value === 1 ? 'reseña' : 'reseñas'}
         </p>
       </div>
@@ -81,7 +88,7 @@ const TimelineChart = ({ data }: { data: any[] }) => {
           tick={{ fontSize: 12, fill: "#6B7280" }} 
           tickLine={false}
           axisLine={{ stroke: '#E5E7EB' }}
-          interval={6}
+          interval={data.length > 10 ? 6 : 0}
         />
         <YAxis 
           tick={{ fontSize: 12, fill: "#6B7280" }} 
@@ -112,17 +119,29 @@ const TimelineChart = ({ data }: { data: any[] }) => {
 
 const ReviewsTimeline = () => {
   return (
-    <Card className="bg-white shadow-sm border-0 rounded-2xl overflow-hidden">
+    <Card className="bg-white shadow-md border-0 rounded-xl overflow-hidden mb-8">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
         <div className="flex items-center">
           <AreaChart className="h-5 w-5 mr-2 text-[#02B1C4]" />
           <CardTitle className="text-lg font-semibold text-[#2F2F4C]">
-            Evolución de reseñas en los últimos 30 días
+            Evolución de reseñas
           </CardTitle>
         </div>
       </CardHeader>
       <CardContent>
-        <TimelineChart data={last30DaysData} />
+        <Tabs defaultValue="30days">
+          <TabsList className="mb-4">
+            <TabsTrigger value="30days">Últimos 30 días</TabsTrigger>
+            <TabsTrigger value="3months">Últimos 3 meses</TabsTrigger>
+          </TabsList>
+          <p className="text-sm text-[#2F2F4C]/70 mb-4">Cantidad de reseñas diarias recibidas</p>
+          <TabsContent value="30days">
+            <TimelineChart data={last30DaysData} />
+          </TabsContent>
+          <TabsContent value="3months">
+            <TimelineChart data={last3MonthsData} />
+          </TabsContent>
+        </Tabs>
       </CardContent>
     </Card>
   );

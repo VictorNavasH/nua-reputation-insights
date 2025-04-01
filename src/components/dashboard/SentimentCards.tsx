@@ -10,15 +10,15 @@ const SentimentCards = () => {
       
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Positive Sentiment */}
-        <Card className="overflow-hidden rounded-2xl border-none shadow-md">
-          <CardContent className="p-6">
+        <Card className="overflow-hidden rounded-xl border-none shadow-md p-4 hover:shadow-lg transition-shadow">
+          <CardContent className="p-0">
             <div className="flex justify-between items-start">
               <div className="flex items-center space-x-3">
-                <div className="p-2 rounded-lg bg-[#17C3B220]">
+                <div className="p-3 rounded-full bg-[#17C3B220]">
                   <ThumbsUp className="h-6 w-6 text-[#17C3B2]" />
                 </div>
                 <div>
-                  <div className="text-2xl">👍</div>
+                  <div className="text-2xl font-bold">👍</div>
                   <p className="text-sm text-[#2F2F4C]/70">Positivas</p>
                 </div>
               </div>
@@ -30,11 +30,12 @@ const SentimentCards = () => {
             <div className="mt-4">
               <div className="h-2 bg-[#E8EDF3] rounded-full overflow-hidden">
                 <div 
-                  className="h-full transition-all duration-1000 ease-in-out"
+                  className="h-full transition-all duration-1000 ease-in-out animate-progress-fill"
                   style={{ 
                     width: "78%",
-                    backgroundColor: "#17C3B2"
-                  }}
+                    backgroundColor: "#17C3B2",
+                    "--progress-value": "78%" 
+                  } as React.CSSProperties}
                 />
               </div>
             </div>
@@ -42,31 +43,32 @@ const SentimentCards = () => {
         </Card>
         
         {/* Neutral Sentiment */}
-        <Card className="overflow-hidden rounded-2xl border-none shadow-md">
-          <CardContent className="p-6">
+        <Card className="overflow-hidden rounded-xl border-none shadow-md p-4 hover:shadow-lg transition-shadow">
+          <CardContent className="p-0">
             <div className="flex justify-between items-start">
               <div className="flex items-center space-x-3">
-                <div className="p-2 rounded-lg bg-[#FFCB7720]">
+                <div className="p-3 rounded-full bg-[#FFCB7720]">
                   <Minus className="h-6 w-6 text-[#FFCB77]" />
                 </div>
                 <div>
-                  <div className="text-2xl">😐</div>
+                  <div className="text-2xl font-bold">😐</div>
                   <p className="text-sm text-[#2F2F4C]/70">Neutras</p>
                 </div>
               </div>
               <span className="text-2xl font-bold text-[#FFCB77]">
-                15%
+                14%
               </span>
             </div>
             
             <div className="mt-4">
               <div className="h-2 bg-[#E8EDF3] rounded-full overflow-hidden">
                 <div 
-                  className="h-full transition-all duration-1000 ease-in-out"
+                  className="h-full transition-all duration-1000 ease-in-out animate-progress-fill"
                   style={{ 
-                    width: "15%",
-                    backgroundColor: "#FFCB77"
-                  }}
+                    width: "14%",
+                    backgroundColor: "#FFCB77",
+                    "--progress-value": "14%" 
+                  } as React.CSSProperties}
                 />
               </div>
             </div>
@@ -74,31 +76,32 @@ const SentimentCards = () => {
         </Card>
         
         {/* Negative Sentiment */}
-        <Card className="overflow-hidden rounded-2xl border-none shadow-md">
-          <CardContent className="p-6">
+        <Card className="overflow-hidden rounded-xl border-none shadow-md p-4 hover:shadow-lg transition-shadow">
+          <CardContent className="p-0">
             <div className="flex justify-between items-start">
               <div className="flex items-center space-x-3">
-                <div className="p-2 rounded-lg bg-[#FE6D7320]">
-                  <ThumbsDown className="h-6 w-6 text-[#FE6D73]" />
+                <div className="p-3 rounded-full bg-[#FF479720]">
+                  <ThumbsDown className="h-6 w-6 text-[#FF4797]" />
                 </div>
                 <div>
-                  <div className="text-2xl">👎</div>
+                  <div className="text-2xl font-bold">👎</div>
                   <p className="text-sm text-[#2F2F4C]/70">Negativas</p>
                 </div>
               </div>
-              <span className="text-2xl font-bold text-[#FE6D73]">
-                7%
+              <span className="text-2xl font-bold text-[#FF4797]">
+                8%
               </span>
             </div>
             
             <div className="mt-4">
               <div className="h-2 bg-[#E8EDF3] rounded-full overflow-hidden">
                 <div 
-                  className="h-full transition-all duration-1000 ease-in-out"
+                  className="h-full transition-all duration-1000 ease-in-out animate-progress-fill"
                   style={{ 
-                    width: "7%",
-                    backgroundColor: "#FE6D73"
-                  }}
+                    width: "8%",
+                    backgroundColor: "#FF4797",
+                    "--progress-value": "8%" 
+                  } as React.CSSProperties}
                 />
               </div>
             </div>
