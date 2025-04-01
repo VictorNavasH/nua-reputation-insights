@@ -5,7 +5,6 @@ import Footer from '../components/Footer';
 import ReviewsKPI from '../components/dashboard/ReviewsKPI';
 import SentimentCards from '../components/dashboard/SentimentCards';
 import ProgressCard from '../components/dashboard/ProgressCard';
-import ReviewsTimeline from '../components/dashboard/ReviewsTimeline';
 import FeaturedReviews from '../components/dashboard/FeaturedReviews';
 import CustomReviewChart from '../components/dashboard/CustomReviewChart';
 import { Separator } from '@/components/ui/separator';
@@ -22,9 +21,6 @@ const Index = () => {
           
           {/* Progress Card */}
           <ProgressCard />
-          
-          {/* Reviews Timeline Graph */}
-          <ReviewsTimeline />
           
           {/* Custom Review Chart */}
           <CustomReviewChart />
