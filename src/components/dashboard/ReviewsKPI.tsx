@@ -1,9 +1,37 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Star, MessageSquare, TrendingUp, BarChart3, ChevronUp } from 'lucide-react';
+import { Star, MessageSquare, TrendingUp, BarChart3, ChevronUp, ArrowUp, ArrowDown } from 'lucide-react';
+import { useDashboard } from '@/contexts/DashboardContext';
 
 const ReviewsKPI = () => {
+  const { kpiData } = useDashboard();
+  
+  // Función auxiliar para renderizar la tendencia
+  const renderTrend = (value: number, trend: 'up' | 'down' | 'stable') => {
+    if (trend === 'up') {
+      return (
+        <div className="flex items-center text-xs text-green-600">
+          <ArrowUp size={14} />
+          <span className="ml-1">{value}% más que el mes anterior</span>
+        </div>
+      );
+    } else if (trend === 'down') {
+      return (
+        <div className="flex items-center text-xs text-red-500">
+          <ArrowDown size={14} />
+          <span className="ml-1">{value}% menos que el mes anterior</span>
+        </div>
+      );
+    } else {
+      return (
+        <div className="flex items-center text-xs text-gray-500">
+          <span className="ml-1">Sin cambios respecto al mes anterior</span>
+        </div>
+      );
+    }
+  };
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {/* Media de Reseñas */}
@@ -19,13 +47,17 @@ const ReviewsKPI = () => {
               </div>
               <div>
                 <p className="text-sm text-[#2F2F4C]/70">Calificación</p>
-                <p className="text-2xl font-bold text-[#2F2F4C]">4.6 ⭐</p>
+                <p className="text-2xl font-bold text-[#2F2F4C]">{kpiData.averageRating} ⭐</p>
               </div>
             </div>
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#E0E5EB] transition-colors">
               <ChevronUp className="h-5 w-5 text-[#02B1C4]" />
             </div>
           </div>
+          {renderTrend(
+            kpiData.comparedToPrevious.averageRating.value,
+            kpiData.comparedToPrevious.averageRating.trend
+          )}
         </CardContent>
       </Card>
 
@@ -42,13 +74,17 @@ const ReviewsKPI = () => {
               </div>
               <div>
                 <p className="text-sm text-[#2F2F4C]/70">Este mes</p>
-                <p className="text-2xl font-bold text-[#2F2F4C]">32</p>
+                <p className="text-2xl font-bold text-[#2F2F4C]">{kpiData.totalReviews}</p>
               </div>
             </div>
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#E0E5EB] transition-colors">
               <ChevronUp className="h-5 w-5 text-[#FFCB77]" />
             </div>
           </div>
+          {renderTrend(
+            kpiData.comparedToPrevious.totalReviews.value,
+            kpiData.comparedToPrevious.totalReviews.trend
+          )}
         </CardContent>
       </Card>
 
@@ -65,13 +101,17 @@ const ReviewsKPI = () => {
               </div>
               <div>
                 <p className="text-sm text-[#2F2F4C]/70">Porcentaje</p>
-                <p className="text-2xl font-bold text-[#2F2F4C]">78%</p>
+                <p className="text-2xl font-bold text-[#2F2F4C]">{kpiData.positivePercentage}%</p>
               </div>
             </div>
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#E0E5EB] transition-colors">
               <ChevronUp className="h-5 w-5 text-[#02B1C4]" />
             </div>
           </div>
+          {renderTrend(
+            kpiData.comparedToPrevious.positivePercentage.value,
+            kpiData.comparedToPrevious.positivePercentage.trend
+          )}
         </CardContent>
       </Card>
 
@@ -88,13 +128,17 @@ const ReviewsKPI = () => {
               </div>
               <div>
                 <p className="text-sm text-[#2F2F4C]/70">Objetivo</p>
-                <p className="text-2xl font-bold text-[#2F2F4C]">50</p>
+                <p className="text-2xl font-bold text-[#2F2F4C]">{kpiData.monthlyTarget}</p>
               </div>
             </div>
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#E0E5EB] transition-colors">
               <ChevronUp className="h-5 w-5 text-[#FF4797]" />
             </div>
           </div>
+          {renderTrend(
+            kpiData.comparedToPrevious.monthlyReviews.value,
+            kpiData.comparedToPrevious.monthlyReviews.trend
+          )}
         </CardContent>
       </Card>
     </div>

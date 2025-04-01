@@ -2,8 +2,11 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { ThumbsUp, Minus, ThumbsDown } from 'lucide-react';
+import { useDashboard } from '@/contexts/DashboardContext';
 
 const SentimentCards = () => {
+  const { sentimentData } = useDashboard();
+  
   return (
     <div className="mb-8">
       <h2 className="text-lg font-semibold text-[#2F2F4C] mb-4">Análisis de sentimiento</h2>
@@ -23,7 +26,7 @@ const SentimentCards = () => {
                 </div>
               </div>
               <span className="text-2xl font-bold text-[#17C3B2]">
-                78%
+                {sentimentData.positive}%
               </span>
             </div>
             
@@ -32,9 +35,9 @@ const SentimentCards = () => {
                 <div 
                   className="h-full transition-all duration-1000 ease-in-out animate-progress-fill"
                   style={{ 
-                    width: "78%",
+                    width: `${sentimentData.positive}%`,
                     backgroundColor: "#17C3B2",
-                    "--progress-value": "78%" 
+                    "--progress-value": `${sentimentData.positive}%` 
                   } as React.CSSProperties}
                 />
               </div>
@@ -56,7 +59,7 @@ const SentimentCards = () => {
                 </div>
               </div>
               <span className="text-2xl font-bold text-[#FFCB77]">
-                14%
+                {sentimentData.neutral}%
               </span>
             </div>
             
@@ -65,9 +68,9 @@ const SentimentCards = () => {
                 <div 
                   className="h-full transition-all duration-1000 ease-in-out animate-progress-fill"
                   style={{ 
-                    width: "14%",
+                    width: `${sentimentData.neutral}%`,
                     backgroundColor: "#FFCB77",
-                    "--progress-value": "14%" 
+                    "--progress-value": `${sentimentData.neutral}%` 
                   } as React.CSSProperties}
                 />
               </div>
@@ -89,7 +92,7 @@ const SentimentCards = () => {
                 </div>
               </div>
               <span className="text-2xl font-bold text-[#FF4797]">
-                8%
+                {sentimentData.negative}%
               </span>
             </div>
             
@@ -98,9 +101,9 @@ const SentimentCards = () => {
                 <div 
                   className="h-full transition-all duration-1000 ease-in-out animate-progress-fill"
                   style={{ 
-                    width: "8%",
+                    width: `${sentimentData.negative}%`,
                     backgroundColor: "#FF4797",
-                    "--progress-value": "8%" 
+                    "--progress-value": `${sentimentData.negative}%` 
                   } as React.CSSProperties}
                 />
               </div>

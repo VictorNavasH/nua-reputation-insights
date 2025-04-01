@@ -4,9 +4,12 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AreaChart } from 'lucide-react';
 import { ThirtyDaysChart, ThreeMonthsChart } from './ReviewCharts';
+import { useDashboard } from '@/contexts/DashboardContext';
 
 // Main component that wraps the chart in a card
 const CustomReviewChart = () => {
+  const { chartData, isLoading } = useDashboard();
+  
   return (
     <Card className="overflow-hidden rounded-2xl border-none shadow-md mb-8">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -24,16 +27,24 @@ const CustomReviewChart = () => {
             <TabsTrigger value="3months">Últimos 3 meses</TabsTrigger>
           </TabsList>
           <p className="text-sm text-[#2F2F4C]/70 mb-4">Cantidad de reseñas diarias recibidas</p>
-          <TabsContent value="30days">
-            <div className="h-[300px] w-full">
-              <ThirtyDaysChart />
+          {isLoading ? (
+            <div className="h-[300px] w-full flex items-center justify-center">
+              <p>Cargando datos...</p>
             </div>
-          </TabsContent>
-          <TabsContent value="3months">
-            <div className="h-[300px] w-full">
-              <ThreeMonthsChart />
-            </div>
-          </TabsContent>
+          ) : (
+            <>
+              <TabsContent value="30days">
+                <div className="h-[300px] w-full">
+                  <ThirtyDaysChart data={chartData.thirtyDays} />
+                </div>
+              </TabsContent>
+              <TabsContent value="3months">
+                <div className="h-[300px] w-full">
+                  <ThreeMonthsChart data={chartData.threeMonths} />
+                </div>
+              </TabsContent>
+            </>
+          )}
         </Tabs>
       </CardContent>
     </Card>

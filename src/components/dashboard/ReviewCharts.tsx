@@ -1,8 +1,68 @@
 
 import React from 'react';
+import { TimeSeriesPoint } from '@/types/dashboard';
+
+interface ChartProps {
+  data: TimeSeriesPoint[];
+}
 
 // Chart component for 30 days view
-export const ThirtyDaysChart = () => {
+export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
+  // Extraemos los puntos de datos clave para mapearlos a las posiciones de los puntos en el SVG
+  const dataPoints = React.useMemo(() => {
+    // Seleccionar puntos representativos para mostrar en el gráfico
+    const points = [];
+    
+    // Asegúrate de incluir al menos algunos puntos para una visualización adecuada
+    if (data.length > 0) {
+      // Añadir el primer punto
+      points.push({
+        x: 0,
+        y: 100 - (data[0].reviews * 10), // Convertir a posición Y (invertida para el SVG)
+        value: data[0].reviews,
+        date: data[0].date
+      });
+      
+      // Añadir puntos intermedios
+      const step = Math.floor(data.length / 5);
+      for (let i = 1; i < 5; i++) {
+        const index = i * step;
+        if (index < data.length) {
+          points.push({
+            x: (index / (data.length - 1)) * 100,
+            y: 100 - (data[index].reviews * 10),
+            value: data[index].reviews,
+            date: data[index].date
+          });
+        }
+      }
+      
+      // Añadir el último punto
+      const lastIndex = data.length - 1;
+      points.push({
+        x: 100,
+        y: 100 - (data[lastIndex].reviews * 10),
+        value: data[lastIndex].reviews,
+        date: data[lastIndex].date
+      });
+    }
+    
+    return points;
+  }, [data]);
+  
+  // Crear el path SVG para la línea y el área
+  const linePath = React.useMemo(() => {
+    if (dataPoints.length < 2) return "";
+    return dataPoints.map((point, i) => 
+      (i === 0 ? `M${point.x},${point.y}` : ` C${point.x - 10},${dataPoints[i-1].y} ${point.x - 10},${point.y} ${point.x},${point.y}`)
+    ).join("");
+  }, [dataPoints]);
+  
+  const areaPath = React.useMemo(() => {
+    if (dataPoints.length < 2) return "";
+    return linePath + ` L${dataPoints[dataPoints.length-1].x},100 L0,100 Z`;
+  }, [linePath, dataPoints]);
+  
   return (
     <div className="relative h-full w-full">
       {/* Background grid for the chart */}
@@ -24,27 +84,30 @@ export const ThirtyDaysChart = () => {
       
       {/* X-axis labels */}
       <div className="absolute -bottom-6 left-0 flex w-full justify-between px-2 text-xs text-[#2F2F4C]/70">
-        <div>1 Jun</div>
-        <div>6 Jun</div>
-        <div>11 Jun</div>
-        <div>16 Jun</div>
-        <div>21 Jun</div>
-        <div>26 Jun</div>
-        <div>30 Jun</div>
+        {data.length > 0 && (
+          <>
+            <div>{data[0].date}</div>
+            <div>{data[Math.floor(data.length / 5)].date}</div>
+            <div>{data[Math.floor(data.length * 2/5)].date}</div>
+            <div>{data[Math.floor(data.length * 3/5)].date}</div>
+            <div>{data[Math.floor(data.length * 4/5)].date}</div>
+            <div>{data[data.length - 1].date}</div>
+          </>
+        )}
       </div>
       
       {/* Chart line using SVG */}
       <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
         {/* Area under the curve with gradient fill */}
         <path
-          d="M0,80 C10,70 15,75 20,60 C25,45 30,55 35,50 C40,45 45,30 50,35 C55,40 60,20 65,25 C70,30 75,15 80,20 C85,25 90,10 95,15 L95,100 L0,100 Z"
+          d={areaPath}
           fill="url(#gradient)"
           fillOpacity="0.2"
           stroke="none"
         />
         {/* Main line with gradient */}
         <path
-          d="M0,80 C10,70 15,75 20,60 C25,45 30,55 35,50 C40,45 45,30 50,35 C55,40 60,20 65,25 C70,30 75,15 80,20 C85,25 90,10 95,15"
+          d={linePath}
           fill="none"
           stroke="url(#lineGradient)"
           strokeWidth="2"
@@ -65,15 +128,7 @@ export const ThirtyDaysChart = () => {
       </svg>
       
       {/* Data points */}
-      {[
-        { x: 0, y: 80 },
-        { x: 20, y: 60 },
-        { x: 35, y: 50 },
-        { x: 50, y: 35 },
-        { x: 65, y: 25 },
-        { x: 80, y: 20 },
-        { x: 95, y: 15 },
-      ].map((point, i) => (
+      {dataPoints.map((point, i) => (
         <div
           key={i}
           className="absolute h-3 w-3 rounded-full bg-white shadow-md"
@@ -84,6 +139,7 @@ export const ThirtyDaysChart = () => {
             border: '2px solid',
             borderImage: 'linear-gradient(to right, #02B1C4, #FF4797) 1',
           }}
+          title={`${point.date}: ${point.value} reseñas`}
         />
       ))}
     </div>
@@ -91,7 +147,30 @@ export const ThirtyDaysChart = () => {
 };
 
 // Chart component for 3 months view
-export const ThreeMonthsChart = () => {
+export const ThreeMonthsChart: React.FC<ChartProps> = ({ data }) => {
+  // Para la vista de 3 meses, los puntos son más simples
+  const dataPoints = React.useMemo(() => {
+    return data.map((item, index) => ({
+      x: (index / (data.length - 1)) * 100,
+      y: 100 - (item.reviews / 2), // Escala diferente para datos mensuales
+      value: item.reviews,
+      date: item.date
+    }));
+  }, [data]);
+  
+  // Crear el path SVG para la línea y el área
+  const linePath = React.useMemo(() => {
+    if (dataPoints.length < 2) return "";
+    return dataPoints.map((point, i) => 
+      (i === 0 ? `M${point.x},${point.y}` : ` C${point.x - 15},${dataPoints[i-1].y} ${point.x - 15},${point.y} ${point.x},${point.y}`)
+    ).join("");
+  }, [dataPoints]);
+  
+  const areaPath = React.useMemo(() => {
+    if (dataPoints.length < 2) return "";
+    return linePath + ` L${dataPoints[dataPoints.length-1].x},100 L0,100 Z`;
+  }, [linePath, dataPoints]);
+  
   return (
     <div className="relative h-full w-full">
       {/* Background grid for the chart */}
@@ -112,23 +191,23 @@ export const ThreeMonthsChart = () => {
       
       {/* X-axis labels */}
       <div className="absolute -bottom-6 left-0 flex w-full justify-between px-2 text-xs text-[#2F2F4C]/70">
-        <div>Abril</div>
-        <div>Mayo</div>
-        <div>Junio</div>
+        {data.map((item, index) => (
+          <div key={index}>{item.date}</div>
+        ))}
       </div>
       
       {/* Chart line using SVG */}
       <svg className="absolute inset-0 h-full w-full" viewBox="0 0 100 100" preserveAspectRatio="none">
         {/* Area under the curve with gradient fill */}
         <path
-          d="M10,60 C25,40 40,50 50,30 C60,45 75,30 90,40 L90,100 L10,100 Z"
+          d={areaPath}
           fill="url(#gradient)"
           fillOpacity="0.2"
           stroke="none"
         />
         {/* Main line with gradient */}
         <path
-          d="M10,60 C25,40 40,50 50,30 C60,45 75,30 90,40"
+          d={linePath}
           fill="none"
           stroke="url(#lineGradient)"
           strokeWidth="2"
@@ -149,11 +228,7 @@ export const ThreeMonthsChart = () => {
       </svg>
       
       {/* Data points */}
-      {[
-        { x: 10, y: 60 },
-        { x: 50, y: 30 },
-        { x: 90, y: 40 },
-      ].map((point, i) => (
+      {dataPoints.map((point, i) => (
         <div
           key={i}
           className="absolute h-3 w-3 rounded-full bg-white shadow-md"
@@ -164,6 +239,7 @@ export const ThreeMonthsChart = () => {
             border: '2px solid',
             borderImage: 'linear-gradient(to right, #02B1C4, #FF4797) 1',
           }}
+          title={`${point.date}: ${point.value} reseñas`}
         />
       ))}
     </div>
