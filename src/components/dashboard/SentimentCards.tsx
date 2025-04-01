@@ -1,7 +1,6 @@
 
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
-import { ThumbsUp, Minus, ThumbsDown } from 'lucide-react';
 import { useDashboard } from '@/contexts/DashboardContext';
 
 const SentimentCards = () => {
@@ -9,104 +8,46 @@ const SentimentCards = () => {
   
   return (
     <div className="mb-8">
-      <h2 className="text-lg font-semibold text-[#2F2F4C] mb-4">Análisis de sentimiento</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Positive Sentiment */}
-        <Card className="overflow-hidden rounded-xl border-none shadow-md p-4 hover:shadow-lg transition-shadow">
-          <CardContent className="p-0">
-            <div className="flex justify-between items-start">
-              <div className="flex items-center space-x-3">
-                <div className="p-3 rounded-full bg-[#17C3B220]">
-                  <ThumbsUp className="h-6 w-6 text-[#17C3B2]" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">👍</div>
-                  <p className="text-sm text-[#2F2F4C]/70">Positivas</p>
-                </div>
+      <h2 className="mb-4 text-xl font-bold text-[#2F2F4C]">Análisis de Sentimiento</h2>
+      <div className="grid gap-6 md:grid-cols-3">
+        {/* Tarjeta de Sentimiento Positivo */}
+        <Card className="overflow-hidden rounded-2xl border-none shadow-md">
+          <CardContent className="p-6">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#02F2D2]/20">
+                <span className="text-4xl">👍</span>
               </div>
-              <span className="text-2xl font-bold text-[#17C3B2]">
-                {sentimentData.positive}%
-              </span>
-            </div>
-            
-            <div className="mt-4">
-              <div className="h-2 bg-[#E8EDF3] rounded-full overflow-hidden">
-                <div 
-                  className="h-full transition-all duration-1000 ease-in-out animate-progress-fill"
-                  style={{ 
-                    width: `${sentimentData.positive}%`,
-                    backgroundColor: "#17C3B2",
-                    "--progress-value": `${sentimentData.positive}%` 
-                  } as React.CSSProperties}
-                />
-              </div>
+              <h3 className="mb-1 text-lg font-bold text-[#2F2F4C]">Positivas</h3>
+              <p className="text-3xl font-bold text-[#02F2D2]">{sentimentData.positive}%</p>
+              <p className="mt-2 text-sm text-[#2F2F4C]/70">25 reseñas</p>
             </div>
           </CardContent>
         </Card>
-        
-        {/* Neutral Sentiment */}
-        <Card className="overflow-hidden rounded-xl border-none shadow-md p-4 hover:shadow-lg transition-shadow">
-          <CardContent className="p-0">
-            <div className="flex justify-between items-start">
-              <div className="flex items-center space-x-3">
-                <div className="p-3 rounded-full bg-[#FFCB7720]">
-                  <Minus className="h-6 w-6 text-[#FFCB77]" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">😐</div>
-                  <p className="text-sm text-[#2F2F4C]/70">Neutras</p>
-                </div>
+
+        {/* Tarjeta de Sentimiento Neutro */}
+        <Card className="overflow-hidden rounded-2xl border-none shadow-md">
+          <CardContent className="p-6">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#FFCB77]/20">
+                <span className="text-4xl">😐</span>
               </div>
-              <span className="text-2xl font-bold text-[#FFCB77]">
-                {sentimentData.neutral}%
-              </span>
-            </div>
-            
-            <div className="mt-4">
-              <div className="h-2 bg-[#E8EDF3] rounded-full overflow-hidden">
-                <div 
-                  className="h-full transition-all duration-1000 ease-in-out animate-progress-fill"
-                  style={{ 
-                    width: `${sentimentData.neutral}%`,
-                    backgroundColor: "#FFCB77",
-                    "--progress-value": `${sentimentData.neutral}%` 
-                  } as React.CSSProperties}
-                />
-              </div>
+              <h3 className="mb-1 text-lg font-bold text-[#2F2F4C]">Neutras</h3>
+              <p className="text-3xl font-bold text-[#FFCB77]">{sentimentData.neutral}%</p>
+              <p className="mt-2 text-sm text-[#2F2F4C]/70">5 reseñas</p>
             </div>
           </CardContent>
         </Card>
-        
-        {/* Negative Sentiment */}
-        <Card className="overflow-hidden rounded-xl border-none shadow-md p-4 hover:shadow-lg transition-shadow">
-          <CardContent className="p-0">
-            <div className="flex justify-between items-start">
-              <div className="flex items-center space-x-3">
-                <div className="p-3 rounded-full bg-[#FF479720]">
-                  <ThumbsDown className="h-6 w-6 text-[#FF4797]" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold">👎</div>
-                  <p className="text-sm text-[#2F2F4C]/70">Negativas</p>
-                </div>
+
+        {/* Tarjeta de Sentimiento Negativo */}
+        <Card className="overflow-hidden rounded-2xl border-none shadow-md">
+          <CardContent className="p-6">
+            <div className="flex flex-col items-center text-center">
+              <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#FE6D73]/20">
+                <span className="text-4xl">👎</span>
               </div>
-              <span className="text-2xl font-bold text-[#FF4797]">
-                {sentimentData.negative}%
-              </span>
-            </div>
-            
-            <div className="mt-4">
-              <div className="h-2 bg-[#E8EDF3] rounded-full overflow-hidden">
-                <div 
-                  className="h-full transition-all duration-1000 ease-in-out animate-progress-fill"
-                  style={{ 
-                    width: `${sentimentData.negative}%`,
-                    backgroundColor: "#FF4797",
-                    "--progress-value": `${sentimentData.negative}%` 
-                  } as React.CSSProperties}
-                />
-              </div>
+              <h3 className="mb-1 text-lg font-bold text-[#2F2F4C]">Negativas</h3>
+              <p className="text-3xl font-bold text-[#FE6D73]">{sentimentData.negative}%</p>
+              <p className="mt-2 text-sm text-[#2F2F4C]/70">2 reseñas</p>
             </div>
           </CardContent>
         </Card>

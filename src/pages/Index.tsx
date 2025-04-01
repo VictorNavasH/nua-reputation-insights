@@ -7,6 +7,7 @@ import SentimentCards from '../components/dashboard/SentimentCards';
 import ProgressCard from '../components/dashboard/ProgressCard';
 import FeaturedReviews from '../components/dashboard/FeaturedReviews';
 import CustomReviewChart from '../components/dashboard/CustomReviewChart';
+import SentimentAnalysis from '../components/dashboard/SentimentAnalysis';
 import { Separator } from '@/components/ui/separator';
 
 const Index = () => {
@@ -29,6 +30,9 @@ const Index = () => {
           
           {/* Sentiment Analysis Cards */}
           <SentimentCards />
+          
+          {/* Sentiment Analysis Detail */}
+          <SentimentAnalysis />
           
           {/* Featured Reviews */}
           <FeaturedReviews />
