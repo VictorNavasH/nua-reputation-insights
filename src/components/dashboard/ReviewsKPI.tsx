@@ -1,132 +1,103 @@
 
 import React from 'react';
-import { Card } from '@/components/ui/card';
-import { Star, MessageCircle, ThumbsUp, Target } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Star, MessageSquare, TrendingUp, BarChart3, ChevronUp } from 'lucide-react';
 
 const ReviewsKPI = () => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-      {/* Average Rating KPI */}
-      <KPICard 
-        title="Media de Reseñas" 
-        labelText="Calificación"
-        value="4.6" 
-        suffix="★" 
-        icon={<Star className="text-[#FFCE85] fill-[#FFCE85]" size={24} />} 
-        headerBg="#02F2D2"
-        iconBg="#f5f5f5"
-        arrowColor="#02B1C4"
-      />
-      
-      {/* Total Reviews KPI */}
-      <KPICard 
-        title="Total de Reseñas" 
-        labelText="Este mes"
-        value="32" 
-        icon={<MessageCircle className="text-[#FFCB77]" size={24} />} 
-        headerBg="#FFCB77"
-        iconBg="#f5f5f5"
-        arrowColor="#FFCB77"
-      />
-      
-      {/* Positive Sentiment KPI */}
-      <KPICard 
-        title="Sentimiento Positivo" 
-        labelText="Porcentaje"
-        value="78" 
-        suffix="%" 
-        icon={<ThumbsUp className="text-[#227C9D]" size={24} />} 
-        headerBg="#227C9D"
-        iconBg="#f5f5f5"
-        arrowColor="#227C9D"
-      />
-      
-      {/* Monthly Goal KPI */}
-      <KPICard 
-        title="Meta Mensual" 
-        labelText="Objetivo"
-        value="50" 
-        icon={<Target className="text-[#FF4797]" size={24} />} 
-        headerBg="#FF4797"
-        iconBg="#f5f5f5"
-        arrowColor="#FF4797"
-      />
-    </div>
-  );
-};
-
-interface KPICardProps {
-  title: string;
-  labelText: string;
-  value: string;
-  suffix?: string;
-  icon: React.ReactNode;
-  headerBg: string;
-  iconBg: string;
-  arrowColor: string;
-}
-
-const KPICard = ({ 
-  title, 
-  labelText,
-  value, 
-  suffix = '', 
-  icon, 
-  headerBg, 
-  iconBg,
-  arrowColor
-}: KPICardProps) => {
-  return (
-    <Card className="bg-white shadow-sm border-0 rounded-2xl overflow-hidden">
-      {/* Header with background color */}
-      <div className="p-4 text-white font-medium" style={{ backgroundColor: headerBg }}>
-        {title}
-      </div>
-      
-      {/* Content area */}
-      <div className="p-6">
-        <div className="flex justify-between items-center">
-          <div>
-            <p className="text-sm font-medium text-gray-500">{labelText}</p>
-            <div className="flex items-center mt-1">
-              <span className="text-3xl font-bold text-[#2F2F4C]">{value}</span>
-              {suffix && (
-                <span className="text-lg ml-1 font-medium text-[#2F2F4C]">
-                  {suffix === '★' ? (
-                    <span className="text-[#FFCE85]">★</span>
-                  ) : suffix}
-                </span>
-              )}
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* Media de Reseñas */}
+      <Card className="overflow-hidden rounded-2xl border-none shadow-md">
+        <CardHeader className="bg-gradient-to-r from-[#02F2D2] to-[#02B1C4] pb-2">
+          <CardTitle className="text-lg font-medium text-white">Media de Reseñas</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8EDF3]">
+                <Star className="h-6 w-6 text-[#FFCE85] fill-[#FFCE85]" />
+              </div>
+              <div>
+                <p className="text-sm text-[#2F2F4C]/70">Calificación</p>
+                <p className="text-2xl font-bold text-[#2F2F4C]">4.6 ⭐</p>
+              </div>
+            </div>
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#E0E5EB] transition-colors">
+              <ChevronUp className="h-5 w-5 text-[#02B1C4]" />
             </div>
           </div>
-          
-          <div className="rounded-full p-3" style={{ backgroundColor: iconBg }}>
-            {icon}
+        </CardContent>
+      </Card>
+
+      {/* Total de Reseñas */}
+      <Card className="overflow-hidden rounded-2xl border-none shadow-md">
+        <CardHeader className="bg-gradient-to-r from-[#FFCE85] to-[#FFCB77] pb-2">
+          <CardTitle className="text-lg font-medium text-white">Total de Reseñas</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8EDF3]">
+                <MessageSquare className="h-6 w-6 text-[#FFCB77]" />
+              </div>
+              <div>
+                <p className="text-sm text-[#2F2F4C]/70">Este mes</p>
+                <p className="text-2xl font-bold text-[#2F2F4C]">32</p>
+              </div>
+            </div>
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#E0E5EB] transition-colors">
+              <ChevronUp className="h-5 w-5 text-[#FFCB77]" />
+            </div>
           </div>
-        </div>
-        
-        <div className="flex justify-end mt-2">
-          <div 
-            className="rounded-full p-2 cursor-pointer hover:opacity-80 transition-opacity"
-            style={{ backgroundColor: `${iconBg}` }}
-          >
-            <svg 
-              xmlns="http://www.w3.org/2000/svg" 
-              width="16" 
-              height="16" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke={arrowColor} 
-              strokeWidth="2" 
-              strokeLinecap="round" 
-              strokeLinejoin="round"
-            >
-              <polyline points="18 15 12 9 6 15"></polyline>
-            </svg>
+        </CardContent>
+      </Card>
+
+      {/* Sentimiento Positivo */}
+      <Card className="overflow-hidden rounded-2xl border-none shadow-md">
+        <CardHeader className="bg-gradient-to-r from-[#02B1C4] to-[#364F6B] pb-2">
+          <CardTitle className="text-lg font-medium text-white">Sentimiento Positivo</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8EDF3]">
+                <TrendingUp className="h-6 w-6 text-[#02B1C4]" />
+              </div>
+              <div>
+                <p className="text-sm text-[#2F2F4C]/70">Porcentaje</p>
+                <p className="text-2xl font-bold text-[#2F2F4C]">78%</p>
+              </div>
+            </div>
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#E0E5EB] transition-colors">
+              <ChevronUp className="h-5 w-5 text-[#02B1C4]" />
+            </div>
           </div>
-        </div>
-      </div>
-    </Card>
+        </CardContent>
+      </Card>
+
+      {/* Meta Mensual */}
+      <Card className="overflow-hidden rounded-2xl border-none shadow-md">
+        <CardHeader className="bg-gradient-to-r from-[#FF4797] to-[#FE6D73] pb-2">
+          <CardTitle className="text-lg font-medium text-white">Meta Mensual</CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#E8EDF3]">
+                <BarChart3 className="h-6 w-6 text-[#FF4797]" />
+              </div>
+              <div>
+                <p className="text-sm text-[#2F2F4C]/70">Objetivo</p>
+                <p className="text-2xl font-bold text-[#2F2F4C]">50</p>
+              </div>
+            </div>
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#E0E5EB] transition-colors">
+              <ChevronUp className="h-5 w-5 text-[#FF4797]" />
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
 
