@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -61,7 +62,35 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				// NÜA custom colors
+				nua: {
+					navy: '#2F2F4C',
+					blue: {
+						light: '#8CA6C5',
+						lighter: '#E8EDF3'
+					},
+					teal: {
+						DEFAULT: '#02B1C4',
+						light: '#02F2D2'
+					},
+					pink: {
+						DEFAULT: '#FF4797',
+						light: '#EDADFF'
+					},
+					orange: '#FFCE85',
+					red: '#FE6D73',
+					darkblue: '#364F6B',
+					// Second palette
+					blue2: '#227C9D',
+					teal2: '#17C3B2',
+					orange2: '#FFCB77',
+					white: '#FEF9EF',
+					red2: '#FE6D73'
 				}
+			},
+			fontFamily: {
+				sans: ['Inter', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -70,25 +99,22 @@ export default {
 			},
 			keyframes: {
 				'accordion-down': {
-					from: {
-						height: '0'
-					},
-					to: {
-						height: 'var(--radix-accordion-content-height)'
-					}
+					from: { height: '0' },
+					to: { height: 'var(--radix-accordion-content-height)' }
 				},
 				'accordion-up': {
-					from: {
-						height: 'var(--radix-accordion-content-height)'
-					},
-					to: {
-						height: '0'
-					}
+					from: { height: 'var(--radix-accordion-content-height)' },
+					to: { height: '0' }
+				},
+				'progress-fill': {
+					'0%': { width: '0%' },
+					'100%': { width: 'var(--progress-value)' }
 				}
 			},
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
-				'accordion-up': 'accordion-up 0.2s ease-out'
+				'accordion-up': 'accordion-up 0.2s ease-out',
+				'progress-fill': 'progress-fill 1s ease-in-out'
 			}
 		}
 	},
