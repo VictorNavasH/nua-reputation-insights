@@ -7,6 +7,8 @@ import SentimentCards from '../components/dashboard/SentimentCards';
 import ProgressCard from '../components/dashboard/ProgressCard';
 import ReviewsTimeline from '../components/dashboard/ReviewsTimeline';
 import FeaturedReviews from '../components/dashboard/FeaturedReviews';
+import CustomReviewChart from '../components/dashboard/CustomReviewChart';
+import { Separator } from '@/components/ui/separator';
 
 const Index = () => {
   return (
@@ -23,6 +25,11 @@ const Index = () => {
           
           {/* Reviews Timeline Graph */}
           <ReviewsTimeline />
+          
+          {/* Custom Review Chart */}
+          <CustomReviewChart />
+          
+          <Separator className="my-6" />
           
           {/* Sentiment Analysis Cards */}
           <SentimentCards />
