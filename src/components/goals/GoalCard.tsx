@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Edit, Copy } from 'lucide-react';
+import { getIconByName } from './GoalIcons';
 
 interface GoalCardProps {
   goal: {
@@ -12,7 +13,7 @@ interface GoalCardProps {
     current: number;
     target: number;
     unit: string;
-    icon: React.ReactNode;
+    iconName: string;
     month: string;
     year: number;
     inverted?: boolean;
@@ -38,6 +39,7 @@ const GoalCard = ({ goal, onEdit, onDuplicate }: GoalCardProps) => {
 
   const progressPercentage = calculateProgress(goal.current, goal.target, goal.inverted);
   const progressColor = getProgressColor(progressPercentage);
+  const iconElement = getIconByName(goal.iconName);
 
   return (
     <Card className="overflow-hidden">
@@ -45,7 +47,7 @@ const GoalCard = ({ goal, onEdit, onDuplicate }: GoalCardProps) => {
         <div className="flex justify-between items-start mb-4">
           <div className="flex items-center">
             <div className="flex h-10 w-10 items-center justify-center rounded-full mr-3 bg-pink-100">
-              {goal.icon}
+              {iconElement}
             </div>
             <div>
               <h3 className="font-semibold text-lg text-[#2F2F4C]">{goal.title}</h3>

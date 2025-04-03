@@ -1,6 +1,5 @@
 
-import { MessageSquare, ThumbsUp, Star, Clock } from 'lucide-react';
-import React from 'react';
+import { MessageSquareIcon, ThumbsUpIcon, StarIcon, ClockIcon } from './GoalIcons';
 
 // Updates to include more years and quarters
 export const currentYear = new Date().getFullYear();
@@ -11,7 +10,7 @@ export const months = [
   "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"
 ];
 
-// Updated mock data to include year
+// Updated mock data to include year and icon names instead of JSX elements
 export const defaultGoals = [{
   id: 1,
   title: 'Reseñas mensuales',
@@ -19,7 +18,7 @@ export const defaultGoals = [{
   current: 32,
   target: 50,
   unit: 'reseñas',
-  icon: <MessageSquare className="h-5 w-5" />,
+  iconName: 'MessageSquare',
   month: 'junio',
   year: 2023
 }, {
@@ -29,7 +28,7 @@ export const defaultGoals = [{
   current: 78,
   target: 85,
   unit: '%',
-  icon: <ThumbsUp className="h-5 w-5" />,
+  iconName: 'ThumbsUp',
   month: 'junio',
   year: 2023
 }, {
@@ -39,7 +38,7 @@ export const defaultGoals = [{
   current: 4.6,
   target: 4.8,
   unit: 'estrellas',
-  icon: <Star className="h-5 w-5" />,
+  iconName: 'Star',
   month: 'junio',
   year: 2023
 }, {
@@ -49,7 +48,7 @@ export const defaultGoals = [{
   current: 8,
   target: 5,
   unit: 'horas',
-  icon: <Clock className="h-5 w-5" />,
+  iconName: 'Clock',
   month: 'junio',
   year: 2023,
   inverted: true // Lower is better for this goal
@@ -60,7 +59,7 @@ export const defaultGoals = [{
   current: 40,
   target: 50,
   unit: 'reseñas',
-  icon: <MessageSquare className="h-5 w-5" />,
+  iconName: 'MessageSquare',
   month: 'julio',
   year: 2023
 }, {
@@ -70,7 +69,7 @@ export const defaultGoals = [{
   current: 4.7,
   target: 4.8,
   unit: 'estrellas',
-  icon: <Star className="h-5 w-5" />,
+  iconName: 'Star',
   month: 'enero',
   year: 2024
 }];
