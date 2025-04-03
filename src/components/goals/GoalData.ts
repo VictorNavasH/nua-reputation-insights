@@ -1,9 +1,16 @@
 
 import { MessageSquareIcon, ThumbsUpIcon, StarIcon, ClockIcon } from './GoalIcons';
 
-// Updates to include more years and quarters
+// Updates to include years back to 2020
 export const currentYear = new Date().getFullYear();
-export const availableYears = [currentYear, currentYear - 1, currentYear - 2];
+export const availableYears = [
+  currentYear, 
+  currentYear - 1, 
+  currentYear - 2,
+  currentYear - 3,
+  currentYear - 4,
+  currentYear - 5
+];
 export const quarters = ["Q1 (Ene-Mar)", "Q2 (Abr-Jun)", "Q3 (Jul-Sep)", "Q4 (Oct-Dic)"];
 export const months = [
   "enero", "febrero", "marzo", "abril", "mayo", "junio",
@@ -74,11 +81,32 @@ export const defaultGoals = [{
   year: 2024
 }];
 
-// Historical summary data by year and quarter
+// Historical summary data by year and quarter - expanded to include more years
 export const historicalSummary = [
+  // 2020 data
+  { year: 2020, quarter: "Q1", goalsCompleted: 6, totalGoals: 10 },
+  { year: 2020, quarter: "Q2", goalsCompleted: 7, totalGoals: 10 },
+  { year: 2020, quarter: "Q3", goalsCompleted: 8, totalGoals: 10 },
+  { year: 2020, quarter: "Q4", goalsCompleted: 9, totalGoals: 10 },
+  
+  // 2021 data
+  { year: 2021, quarter: "Q1", goalsCompleted: 7, totalGoals: 10 },
+  { year: 2021, quarter: "Q2", goalsCompleted: 8, totalGoals: 11 },
+  { year: 2021, quarter: "Q3", goalsCompleted: 9, totalGoals: 11 },
+  { year: 2021, quarter: "Q4", goalsCompleted: 10, totalGoals: 11 },
+  
+  // 2022 data
+  { year: 2022, quarter: "Q1", goalsCompleted: 8, totalGoals: 11 },
+  { year: 2022, quarter: "Q2", goalsCompleted: 9, totalGoals: 12 },
+  { year: 2022, quarter: "Q3", goalsCompleted: 8, totalGoals: 12 },
+  { year: 2022, quarter: "Q4", goalsCompleted: 11, totalGoals: 12 },
+  
+  // 2023 data
   { year: 2023, quarter: "Q1", goalsCompleted: 8, totalGoals: 12 },
   { year: 2023, quarter: "Q2", goalsCompleted: 10, totalGoals: 12 },
   { year: 2023, quarter: "Q3", goalsCompleted: 7, totalGoals: 12 },
   { year: 2023, quarter: "Q4", goalsCompleted: 9, totalGoals: 12 },
+  
+  // 2024 data
   { year: 2024, quarter: "Q1", goalsCompleted: 5, totalGoals: 9 }
 ];
