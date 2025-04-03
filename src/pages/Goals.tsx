@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -6,76 +5,50 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { 
-  Target, 
-  Clock, 
-  Heart, 
-  ThumbsUp, 
-  MessageSquare, 
-  Star, 
-  Edit, 
-  Copy, 
-  Plus, 
-  Save, 
-  X 
-} from 'lucide-react';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Target, Clock, Heart, ThumbsUp, MessageSquare, Star, Edit, Copy, Plus, Save, X } from 'lucide-react';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
 // Mock data for goals
-const defaultGoals = [
-  {
-    id: 1,
-    title: 'Reseñas mensuales',
-    description: 'Número total de reseñas a conseguir este mes',
-    current: 32,
-    target: 50,
-    unit: 'reseñas',
-    icon: <MessageSquare className="h-5 w-5" />,
-    month: 'junio'
-  },
-  {
-    id: 2,
-    title: 'Sentimiento positivo',
-    description: 'Porcentaje de reseñas positivas',
-    current: 78,
-    target: 85,
-    unit: '%',
-    icon: <ThumbsUp className="h-5 w-5" />,
-    month: 'junio'
-  },
-  {
-    id: 3,
-    title: 'Puntuación media',
-    description: 'Calificación media de las reseñas',
-    current: 4.6,
-    target: 4.8,
-    unit: 'estrellas',
-    icon: <Star className="h-5 w-5" />,
-    month: 'junio'
-  },
-  {
-    id: 4,
-    title: 'Tiempo de respuesta',
-    description: 'Tiempo medio para responder a las reseñas',
-    current: 8,
-    target: 5,
-    unit: 'horas',
-    icon: <Clock className="h-5 w-5" />,
-    month: 'junio',
-    inverted: true // Lower is better for this goal
-  }
-];
-
+const defaultGoals = [{
+  id: 1,
+  title: 'Reseñas mensuales',
+  description: 'Número total de reseñas a conseguir este mes',
+  current: 32,
+  target: 50,
+  unit: 'reseñas',
+  icon: <MessageSquare className="h-5 w-5" />,
+  month: 'junio'
+}, {
+  id: 2,
+  title: 'Sentimiento positivo',
+  description: 'Porcentaje de reseñas positivas',
+  current: 78,
+  target: 85,
+  unit: '%',
+  icon: <ThumbsUp className="h-5 w-5" />,
+  month: 'junio'
+}, {
+  id: 3,
+  title: 'Puntuación media',
+  description: 'Calificación media de las reseñas',
+  current: 4.6,
+  target: 4.8,
+  unit: 'estrellas',
+  icon: <Star className="h-5 w-5" />,
+  month: 'junio'
+}, {
+  id: 4,
+  title: 'Tiempo de respuesta',
+  description: 'Tiempo medio para responder a las reseñas',
+  current: 8,
+  target: 5,
+  unit: 'horas',
+  icon: <Clock className="h-5 w-5" />,
+  month: 'junio',
+  inverted: true // Lower is better for this goal
+}];
 const Goals = () => {
   const [month, setMonth] = useState('junio');
   const [goals, setGoals] = useState(defaultGoals);
@@ -84,7 +57,9 @@ const Goals = () => {
 
   // Handle edit goal
   const handleEditGoal = (goal: any) => {
-    setEditingGoal({ ...goal });
+    setEditingGoal({
+      ...goal
+    });
     setIsDialogOpen(true);
   };
 
@@ -137,9 +112,9 @@ const Goals = () => {
   const calculateProgress = (current: number, target: number, inverted = false) => {
     if (inverted) {
       // For inverted metrics (where lower is better)
-      return Math.max(0, Math.min(100, ((target / current) * 100)));
+      return Math.max(0, Math.min(100, target / current * 100));
     }
-    return Math.max(0, Math.min(100, ((current / target) * 100)));
+    return Math.max(0, Math.min(100, current / target * 100));
   };
 
   // Get the progress color based on percentage
@@ -151,9 +126,7 @@ const Goals = () => {
 
   // Filter goals by selected month
   const filteredGoals = goals.filter(goal => goal.month === month);
-
-  return (
-    <div className="min-h-screen flex flex-col bg-[#E8EDF3]">
+  return <div className="min-h-screen flex flex-col bg-[#E8EDF3]">
       <Header />
       
       <main className="flex-grow px-6 py-8">
@@ -174,16 +147,14 @@ const Goals = () => {
             
             <TabsContent value={month}>
               <div className="grid grid-cols-1 gap-6">
-                {filteredGoals.map((goal) => {
-                  const progressPercentage = calculateProgress(goal.current, goal.target, goal.inverted);
-                  const progressColor = getProgressColor(progressPercentage);
-                  
-                  return (
-                    <Card key={goal.id} className="overflow-hidden">
+                {filteredGoals.map(goal => {
+                const progressPercentage = calculateProgress(goal.current, goal.target, goal.inverted);
+                const progressColor = getProgressColor(progressPercentage);
+                return <Card key={goal.id} className="overflow-hidden">
                       <CardContent className="p-6">
                         <div className="flex justify-between items-start mb-4">
                           <div className="flex items-center">
-                            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E8EDF3] mr-3">
+                            <div className="flex h-10 w-10 items-center justify-center rounded-full mr-3 bg-pink-100">
                               {goal.icon}
                             </div>
                             <div>
@@ -209,41 +180,29 @@ const Goals = () => {
                             </span>
                           </div>
                           <div className="h-3 bg-[#E8EDF3] rounded-full overflow-hidden">
-                            <div 
-                              className={`h-full bg-gradient-to-r ${progressColor}`}
-                              style={{ width: `${progressPercentage}%` }}
-                            />
+                            <div className={`h-full bg-gradient-to-r ${progressColor}`} style={{
+                          width: `${progressPercentage}%`
+                        }} />
                           </div>
                           <div className="mt-2 flex justify-between text-xs">
                             <span className="font-medium text-[#2F2F4C]">{Math.round(progressPercentage)}% completado</span>
-                            {goal.inverted ? (
-                              <span className="text-[#2F2F4C]/70">
-                                {goal.current > goal.target 
-                                  ? `${Math.abs(goal.current - goal.target)} ${goal.unit} por encima del objetivo`
-                                  : `Objetivo alcanzado`}
-                              </span>
-                            ) : (
-                              <span className="text-[#2F2F4C]/70">
-                                {goal.current < goal.target 
-                                  ? `Faltan ${goal.target - goal.current} ${goal.unit}`
-                                  : `Objetivo alcanzado`}
-                              </span>
-                            )}
+                            {goal.inverted ? <span className="text-[#2F2F4C]/70">
+                                {goal.current > goal.target ? `${Math.abs(goal.current - goal.target)} ${goal.unit} por encima del objetivo` : `Objetivo alcanzado`}
+                              </span> : <span className="text-[#2F2F4C]/70">
+                                {goal.current < goal.target ? `Faltan ${goal.target - goal.current} ${goal.unit}` : `Objetivo alcanzado`}
+                              </span>}
                           </div>
                         </div>
                       </CardContent>
-                    </Card>
-                  );
-                })}
+                    </Card>;
+              })}
                 
-                {filteredGoals.length === 0 && (
-                  <div className="text-center py-10">
+                {filteredGoals.length === 0 && <div className="text-center py-10">
                     <Target className="mx-auto h-12 w-12 text-gray-400 mb-3" />
                     <h3 className="text-lg font-medium text-gray-500 mb-1">No hay objetivos para este mes</h3>
                     <p className="text-gray-400 mb-4">Crea nuevos objetivos para empezar a hacer seguimiento</p>
                     <Button onClick={handleAddNewGoal}>Crear objetivo</Button>
-                  </div>
-                )}
+                  </div>}
               </div>
             </TabsContent>
           </Tabs>
@@ -256,69 +215,53 @@ const Goals = () => {
           <DialogHeader>
             <DialogTitle>{editingGoal?.id ? 'Editar objetivo' : 'Nuevo objetivo'}</DialogTitle>
             <DialogDescription>
-              {editingGoal?.id 
-                ? 'Modifica los detalles del objetivo existente.'
-                : 'Crea un nuevo objetivo para hacer seguimiento.'
-              }
+              {editingGoal?.id ? 'Modifica los detalles del objetivo existente.' : 'Crea un nuevo objetivo para hacer seguimiento.'}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
               <Label htmlFor="title">Título del objetivo</Label>
-              <Input
-                id="title"
-                value={editingGoal?.title || ''}
-                onChange={(e) => setEditingGoal({ ...editingGoal, title: e.target.value })}
-                placeholder="Ej: Reseñas mensuales"
-              />
+              <Input id="title" value={editingGoal?.title || ''} onChange={e => setEditingGoal({
+              ...editingGoal,
+              title: e.target.value
+            })} placeholder="Ej: Reseñas mensuales" />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="description">Descripción</Label>
-              <Input
-                id="description"
-                value={editingGoal?.description || ''}
-                onChange={(e) => setEditingGoal({ ...editingGoal, description: e.target.value })}
-                placeholder="Ej: Número total de reseñas a conseguir este mes"
-              />
+              <Input id="description" value={editingGoal?.description || ''} onChange={e => setEditingGoal({
+              ...editingGoal,
+              description: e.target.value
+            })} placeholder="Ej: Número total de reseñas a conseguir este mes" />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
                 <Label htmlFor="current">Valor actual</Label>
-                <Input
-                  id="current"
-                  type="number"
-                  value={editingGoal?.current || 0}
-                  onChange={(e) => setEditingGoal({ ...editingGoal, current: parseFloat(e.target.value) })}
-                />
+                <Input id="current" type="number" value={editingGoal?.current || 0} onChange={e => setEditingGoal({
+                ...editingGoal,
+                current: parseFloat(e.target.value)
+              })} />
               </div>
               <div className="grid gap-2">
                 <Label htmlFor="target">Valor objetivo</Label>
-                <Input
-                  id="target"
-                  type="number"
-                  value={editingGoal?.target || 0}
-                  onChange={(e) => setEditingGoal({ ...editingGoal, target: parseFloat(e.target.value) })}
-                />
+                <Input id="target" type="number" value={editingGoal?.target || 0} onChange={e => setEditingGoal({
+                ...editingGoal,
+                target: parseFloat(e.target.value)
+              })} />
               </div>
             </div>
             <div className="grid gap-2">
               <Label htmlFor="unit">Unidad de medida</Label>
-              <Input
-                id="unit"
-                value={editingGoal?.unit || ''}
-                onChange={(e) => setEditingGoal({ ...editingGoal, unit: e.target.value })}
-                placeholder="Ej: reseñas, %, estrellas"
-              />
+              <Input id="unit" value={editingGoal?.unit || ''} onChange={e => setEditingGoal({
+              ...editingGoal,
+              unit: e.target.value
+            })} placeholder="Ej: reseñas, %, estrellas" />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="inverted">
-                <input 
-                  type="checkbox"
-                  id="inverted"
-                  checked={editingGoal?.inverted || false}
-                  onChange={(e) => setEditingGoal({ ...editingGoal, inverted: e.target.checked })}
-                  className="mr-2"
-                />
+                <input type="checkbox" id="inverted" checked={editingGoal?.inverted || false} onChange={e => setEditingGoal({
+                ...editingGoal,
+                inverted: e.target.checked
+              })} className="mr-2" />
                 Métrica invertida (valores más bajos son mejores)
               </Label>
             </div>
@@ -335,8 +278,6 @@ const Goals = () => {
       </Dialog>
       
       <Footer />
-    </div>
-  );
+    </div>;
 };
-
 export default Goals;
