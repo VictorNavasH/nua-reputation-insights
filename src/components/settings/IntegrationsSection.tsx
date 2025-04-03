@@ -3,6 +3,7 @@ import React from 'react';
 import { Separator } from '@/components/ui/separator';
 import ApiIntegrationForm from './ApiIntegrationForm';
 import CsvImportForm from './CsvImportForm';
+import SyncHistoryTable from './SyncHistoryTable';
 
 const IntegrationsSection = () => {
   return (
@@ -46,6 +47,17 @@ const IntegrationsSection = () => {
       <Separator />
       
       <CsvImportForm />
+      
+      <div>
+        <h3 className="text-lg font-medium mt-8">Historial de sincronización</h3>
+        <p className="text-sm text-muted-foreground">
+          Registro de las últimas sincronizaciones de reseñas realizadas.
+        </p>
+      </div>
+      
+      <Separator />
+      
+      <SyncHistoryTable limit={5} />
     </div>
   );
 };
