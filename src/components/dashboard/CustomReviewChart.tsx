@@ -38,7 +38,17 @@ const CustomReviewChart = () => {
             <TabsTrigger value="30days">Últimos 30 días</TabsTrigger>
             <TabsTrigger value="3months">Últimos 3 meses</TabsTrigger>
           </TabsList>
-          <p className="text-sm text-[#2F2F4C]/70 mb-4">Cantidad de reseñas diarias recibidas</p>
+          <div className="flex justify-between items-center mb-4">
+            <p className="text-sm text-[#2F2F4C]/70">Cantidad de reseñas diarias recibidas</p>
+            {!isLoading && reviewStats.thirtyDays.some(item => item.reviews > 0) && (
+              <div className="flex items-center gap-2">
+                <Star size={14} className="text-[#FFCE85] fill-[#FFCE85]" />
+                <span className="text-sm font-medium">
+                  Puntuación media: {calculateAverageRating(reviewStats.thirtyDays)}
+                </span>
+              </div>
+            )}
+          </div>
           {isLoading ? (
             <div className="h-[300px] w-full flex items-center justify-center">
               <p>Cargando datos...</p>
@@ -47,7 +57,7 @@ const CustomReviewChart = () => {
             <>
               <TabsContent value="30days">
                 <div className="h-[300px] w-full relative py-2 px-4">
-                  {reviewStats.thirtyDays.length === 0 ? (
+                  {reviewStats.thirtyDays.length === 0 || !reviewStats.thirtyDays.some(item => item.reviews > 0) ? (
                     <div className="absolute inset-0 flex items-center justify-center text-gray-500">
                       No hay datos disponibles para este período
                     </div>
@@ -58,7 +68,7 @@ const CustomReviewChart = () => {
               </TabsContent>
               <TabsContent value="3months">
                 <div className="h-[300px] w-full relative py-2 px-4">
-                  {reviewStats.threeMonths.length === 0 ? (
+                  {reviewStats.threeMonths.length === 0 || !reviewStats.threeMonths.some(item => item.reviews > 0) ? (
                     <div className="absolute inset-0 flex items-center justify-center text-gray-500">
                       No hay datos disponibles para este período
                     </div>
@@ -73,6 +83,18 @@ const CustomReviewChart = () => {
       </CardContent>
     </Card>
   );
+};
+
+// Helper function to calculate average rating
+const calculateAverageRating = (data: Array<{ reviews: number; rating: number }>) => {
+  const reviewsWithRatings = data.filter(item => item.reviews > 0 && item.rating > 0);
+  
+  if (reviewsWithRatings.length === 0) return "N/A";
+  
+  const totalRating = reviewsWithRatings.reduce((sum, item) => sum + item.rating, 0);
+  const average = totalRating / reviewsWithRatings.length;
+  
+  return average.toFixed(1);
 };
 
 export default CustomReviewChart;

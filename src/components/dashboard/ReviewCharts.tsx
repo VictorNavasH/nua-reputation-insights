@@ -89,6 +89,16 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
     return Array.from({ length: 6 }, (_, i) => Math.round((5 - i) * maxScale / 5));
   }, [data]);
   
+  // Calculate and display average rating points
+  const ratingPoints = React.useMemo(() => {
+    if (dataPoints.length < 2) return [];
+    
+    return dataPoints.filter(point => point.rating > 0).map(point => ({
+      ...point,
+      ratingY: 100 - ((point.rating / 5) * 70) - 10 // Scale 0-5 rating to 90-20 SVG y-position (inverted)
+    }));
+  }, [dataPoints]);
+  
   return (
     <div className="relative h-full w-full pl-8">
       {/* Background grid for the chart */}
@@ -102,6 +112,13 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
       <div className="absolute -left-6 top-0 flex h-full flex-col justify-between py-2 text-xs text-[#2F2F4C]/70">
         {yAxisLabels.map((value, index) => (
           <div key={index} className="w-6 text-right">{value}</div>
+        ))}
+      </div>
+      
+      {/* Rating scale on right */}
+      <div className="absolute -right-4 top-0 flex h-full flex-col justify-between py-2 text-xs text-[#FF4797]">
+        {[5, 4, 3, 2, 1, 0].map((value) => (
+          <div key={value} className="w-4 text-right">{value}</div>
         ))}
       </div>
       
@@ -137,6 +154,20 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
           strokeLinecap="round"
           strokeLinejoin="round"
         />
+        
+        {/* Rating line - connect the rating points with dotted lines */}
+        {ratingPoints.length > 1 && (
+          <path
+            d={ratingPoints.map((point, i) => 
+              (i === 0 ? `M${point.x},${point.ratingY}` : ` L${point.x},${point.ratingY}`)
+            ).join("")}
+            fill="none"
+            stroke="#FF4797"
+            strokeWidth="1.5"
+            strokeDasharray="4 2"
+          />
+        )}
+        
         {/* Gradient definitions */}
         <defs>
           <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -175,6 +206,28 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
             </TooltipContent>
           </Tooltip>
         ))}
+        
+        {/* Rating points with tooltips */}
+        {ratingPoints.map((point, i) => (
+          <Tooltip key={`rating-${i}`}>
+            <TooltipTrigger asChild>
+              <div
+                className="absolute h-3 w-3 rounded-full bg-white shadow-md cursor-pointer"
+                style={{
+                  left: `${point.x}%`,
+                  top: `${point.ratingY}%`,
+                  transform: 'translate(-50%, -50%)',
+                  border: '2px solid #FF4797',
+                  display: point.rating > 0 ? 'block' : 'none',
+                }}
+              />
+            </TooltipTrigger>
+            <TooltipContent className="bg-white p-2 rounded-md shadow-lg border border-gray-200 text-sm">
+              <div className="font-medium">{point.date}</div>
+              <div className="text-[#FF4797]">Puntuación: {point.rating.toFixed(1)}</div>
+            </TooltipContent>
+          </Tooltip>
+        ))}
       </TooltipProvider>
     </div>
   );
@@ -199,6 +252,14 @@ export const ThreeMonthsChart: React.FC<ChartProps> = ({ data }) => {
       rating: item.rating || 0
     }));
   }, [data]);
+  
+  // Calculate rating points
+  const ratingPoints = React.useMemo(() => {
+    return dataPoints.filter(point => point.rating > 0).map(point => ({
+      ...point,
+      ratingY: 100 - ((point.rating / 5) * 70) - 10 // Scale 0-5 rating to 90-20 SVG y-position
+    }));
+  }, [dataPoints]);
   
   // Create SVG path for the line and area
   const linePath = React.useMemo(() => {
@@ -242,6 +303,13 @@ export const ThreeMonthsChart: React.FC<ChartProps> = ({ data }) => {
         ))}
       </div>
       
+      {/* Rating scale on right */}
+      <div className="absolute -right-4 top-0 flex h-full flex-col justify-between py-2 text-xs text-[#FF4797]">
+        {[5, 4, 3, 2, 1, 0].map((value) => (
+          <div key={value} className="w-4 text-right">{value}</div>
+        ))}
+      </div>
+      
       {/* X-axis labels */}
       <div className="absolute -bottom-6 left-0 flex w-full justify-between px-2 text-xs text-[#2F2F4C]/70">
         {data.map((item, index) => (
@@ -267,6 +335,20 @@ export const ThreeMonthsChart: React.FC<ChartProps> = ({ data }) => {
           strokeLinecap="round"
           strokeLinejoin="round"
         />
+        
+        {/* Rating line - connect the rating points */}
+        {ratingPoints.length > 1 && (
+          <path
+            d={ratingPoints.map((point, i) => 
+              (i === 0 ? `M${point.x},${point.ratingY}` : ` L${point.x},${point.ratingY}`)
+            ).join("")}
+            fill="none"
+            stroke="#FF4797"
+            strokeWidth="1.5"
+            strokeDasharray="4 2"
+          />
+        )}
+        
         {/* Gradient definitions */}
         <defs>
           <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -302,6 +384,28 @@ export const ThreeMonthsChart: React.FC<ChartProps> = ({ data }) => {
               {point.rating > 0 && (
                 <div className="text-[#FF4797]">Puntuación media: {point.rating.toFixed(1)}</div>
               )}
+            </TooltipContent>
+          </Tooltip>
+        ))}
+        
+        {/* Rating points with tooltips */}
+        {ratingPoints.map((point, i) => (
+          <Tooltip key={`rating-${i}`}>
+            <TooltipTrigger asChild>
+              <div
+                className="absolute h-3 w-3 rounded-full bg-white shadow-md cursor-pointer"
+                style={{
+                  left: `${point.x}%`,
+                  top: `${point.ratingY}%`,
+                  transform: 'translate(-50%, -50%)',
+                  border: '2px solid #FF4797',
+                  display: point.rating > 0 ? 'block' : 'none',
+                }}
+              />
+            </TooltipTrigger>
+            <TooltipContent className="bg-white p-2 rounded-md shadow-lg border border-gray-200 text-sm">
+              <div className="font-medium">{point.date}</div>
+              <div className="text-[#FF4797]">Puntuación: {point.rating.toFixed(1)}</div>
             </TooltipContent>
           </Tooltip>
         ))}
