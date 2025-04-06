@@ -1,14 +1,30 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Star, MessageSquare, TrendingUp, BarChart3, ChevronUp, ArrowUp, ArrowDown } from 'lucide-react';
+import { Star, MessageSquare, TrendingUp, BarChart3, ChevronUp, ArrowUp, ArrowDown, ChevronDown } from 'lucide-react';
 import { useDashboard } from '@/contexts/DashboardContext';
 
 const ReviewsKPI = () => {
   const { kpiData } = useDashboard();
+  const [showTrends, setShowTrends] = useState({
+    averageRating: true,
+    totalReviews: true,
+    positivePercentage: true,
+    monthlyTarget: true
+  });
+  
+  // Función para alternar la visibilidad de la tendencia por tipo
+  const toggleTrend = (type: keyof typeof showTrends) => {
+    setShowTrends(prev => ({
+      ...prev,
+      [type]: !prev[type]
+    }));
+  };
   
   // Función auxiliar para renderizar la tendencia
-  const renderTrend = (value: number, trend: 'up' | 'down' | 'stable') => {
+  const renderTrend = (value: number, trend: 'up' | 'down' | 'stable', isVisible: boolean) => {
+    if (!isVisible) return null;
+    
     if (trend === 'up') {
       return (
         <div className="flex items-center text-xs text-green-600">
@@ -52,13 +68,21 @@ const ReviewsKPI = () => {
                 </div>
               </div>
             </div>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#b2f7ef] transition-colors">
-              <ChevronUp className="h-5 w-5 text-[#02B1C4]" />
+            <div 
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#b2f7ef] transition-colors"
+              onClick={() => toggleTrend('averageRating')}
+            >
+              {showTrends.averageRating ? (
+                <ChevronUp className="h-5 w-5 text-[#02B1C4]" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-[#02B1C4]" />
+              )}
             </div>
           </div>
           {renderTrend(
             kpiData.comparedToPrevious.averageRating.value,
-            kpiData.comparedToPrevious.averageRating.trend
+            kpiData.comparedToPrevious.averageRating.trend,
+            showTrends.averageRating
           )}
         </CardContent>
       </Card>
@@ -79,13 +103,21 @@ const ReviewsKPI = () => {
                 <p className="text-2xl font-bold text-[#2F2F4C]">{kpiData.totalReviews}</p>
               </div>
             </div>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#b2f7ef] transition-colors">
-              <ChevronUp className="h-5 w-5 text-[#FFCB77]" />
+            <div 
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#b2f7ef] transition-colors"
+              onClick={() => toggleTrend('totalReviews')}
+            >
+              {showTrends.totalReviews ? (
+                <ChevronUp className="h-5 w-5 text-[#FFCB77]" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-[#FFCB77]" />
+              )}
             </div>
           </div>
           {renderTrend(
             kpiData.comparedToPrevious.totalReviews.value,
-            kpiData.comparedToPrevious.totalReviews.trend
+            kpiData.comparedToPrevious.totalReviews.trend,
+            showTrends.totalReviews
           )}
         </CardContent>
       </Card>
@@ -106,13 +138,21 @@ const ReviewsKPI = () => {
                 <p className="text-2xl font-bold text-[#2F2F4C]">{kpiData.positivePercentage}%</p>
               </div>
             </div>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#b2f7ef] transition-colors">
-              <ChevronUp className="h-5 w-5 text-[#02B1C4]" />
+            <div 
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#b2f7ef] transition-colors"
+              onClick={() => toggleTrend('positivePercentage')}
+            >
+              {showTrends.positivePercentage ? (
+                <ChevronUp className="h-5 w-5 text-[#02B1C4]" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-[#02B1C4]" />
+              )}
             </div>
           </div>
           {renderTrend(
             kpiData.comparedToPrevious.positivePercentage.value,
-            kpiData.comparedToPrevious.positivePercentage.trend
+            kpiData.comparedToPrevious.positivePercentage.trend,
+            showTrends.positivePercentage
           )}
         </CardContent>
       </Card>
@@ -133,13 +173,21 @@ const ReviewsKPI = () => {
                 <p className="text-2xl font-bold text-[#2F2F4C]">{kpiData.monthlyTarget}</p>
               </div>
             </div>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#b2f7ef] transition-colors">
-              <ChevronUp className="h-5 w-5 text-[#FF4797]" />
+            <div 
+              className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#b2f7ef] transition-colors"
+              onClick={() => toggleTrend('monthlyTarget')}
+            >
+              {showTrends.monthlyTarget ? (
+                <ChevronUp className="h-5 w-5 text-[#FF4797]" />
+              ) : (
+                <ChevronDown className="h-5 w-5 text-[#FF4797]" />
+              )}
             </div>
           </div>
           {renderTrend(
             kpiData.comparedToPrevious.monthlyReviews.value,
-            kpiData.comparedToPrevious.monthlyReviews.trend
+            kpiData.comparedToPrevious.monthlyReviews.trend,
+            showTrends.monthlyTarget
           )}
         </CardContent>
       </Card>
