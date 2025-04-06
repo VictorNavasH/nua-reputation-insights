@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh, Translate } from 'lucide-react';
+import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh, Languages } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card } from '@/components/ui/card';
@@ -130,7 +130,7 @@ const ReviewsTable = ({ reviews, onOpenResponseDialog }: ReviewsTableProps) => {
                         className="mt-1 h-7 text-xs flex items-center gap-1 text-[#02B1C4] hover:text-[#02B1C4]/80 hover:bg-[#02B1C4]/10"
                         onClick={() => handleTranslate(review.UUID)}
                       >
-                        <Translate size={14} />
+                        <Languages size={14} />
                         {translatedReviews[review.UUID] ? "Ver original" : "Traducir"}
                       </Button>
                     )}

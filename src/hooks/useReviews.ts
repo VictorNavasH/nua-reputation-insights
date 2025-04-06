@@ -58,7 +58,7 @@ export function useReviews() {
         console.log("Raw data from Supabase:", data);
         
         // Transform the data to match the Review interface
-        const formattedReviews = data.map((item, index) => ({
+        const formattedReviews = data.map((item: any, index: number) => ({
           id: index + 1,
           UUID: item.UUID || '',
           customer: item.nombre || 'Cliente anónimo',
