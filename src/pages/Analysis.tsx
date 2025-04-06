@@ -1,3 +1,4 @@
+
 import React, { useState, useMemo } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -185,37 +186,6 @@ const Analysis = () => {
 
   const ratingPercentages = calculatePercentages();
 
-  const calculateSourceDistribution = useMemo(() => {
-    if (!reviews.length) return sourceDistributionData;
-
-    const sourceCount = reviews.reduce((acc, review) => {
-      let source = 'Internas';
-      if (review.profile_url) {
-        if (review.profile_url.includes('google')) {
-          source = 'Google';
-        } else if (review.profile_url.includes('tripadvisor')) {
-          source = 'Tripadvisor';
-        }
-      }
-      
-      acc[source] = (acc[source] || 0) + 1;
-      return acc;
-    }, {});
-
-    const total = Object.values(sourceCount).reduce((sum: number, count: number) => sum + count, 0);
-    
-    const result = Object.entries(sourceCount).map(([name, count]) => ({
-      name,
-      percentage: total > 0 ? Math.round((count as number) / total * 100) : 0
-    }));
-
-    return result.length ? result : sourceDistributionData;
-  }, [reviews]);
-
-  const sourceDistribution = calculateSourceDistribution;
-
-  const SOURCE_COLORS = ['#4285F4', '#DB4437', '#0F9D58'];
-
   if (isLoading) {
     return <div className="min-h-screen flex flex-col bg-[#E8EDF3]">
         <Header />
@@ -344,38 +314,6 @@ const Analysis = () => {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            <Card className="overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-[#ffce85] to-[#02f2d2] pb-2">
-                <CardTitle className="text-lg font-medium text-white">Distribución por origen</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-4">
-                <ResponsiveContainer width="100%" height={300}>
-                  <PieChart>
-                    <Pie 
-                      data={sourceDistribution} 
-                      cx="50%" 
-                      cy="50%" 
-                      labelLine={true} 
-                      outerRadius={80} 
-                      fill="#8884d8" 
-                      dataKey="percentage" 
-                      nameKey="name" 
-                      label={({name, percentage}) => `${name} (${percentage}%)`}
-                    >
-                      {sourceDistribution.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={SOURCE_COLORS[index % SOURCE_COLORS.length]} />
-                      ))}
-                    </Pie>
-                    <Tooltip 
-                      formatter={(value) => [`${value}%`, 'Porcentaje']}
-                      labelFormatter={(label) => `Origen: ${label}`}
-                    />
-                    <Legend />
-                  </PieChart>
-                </ResponsiveContainer>
-              </CardContent>
-            </Card>
-            
             <Card className="overflow-hidden">
               <CardHeader className="bg-gradient-to-r from-[#ffce85] to-[#ff4797] pb-2">
                 <CardTitle className="text-lg font-medium text-white">Nube de palabras</CardTitle>
