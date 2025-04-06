@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AreaChart, Star } from 'lucide-react';
+import { AreaChart, Star, Circle } from 'lucide-react';
 import { ThirtyDaysChart, ThreeMonthsChart } from './ReviewCharts';
 import { useReviews } from '@/hooks/useReviews';
 import { TimeSeriesPoint } from '@/types/dashboard';
@@ -25,11 +25,9 @@ const CustomReviewChart = () => {
         <div className="flex items-center text-sm text-[#2F2F4C]/70">
           <div className="flex items-center mr-4">
             <Star size={16} className="text-[#FFCE85] fill-[#FFCE85] mr-1" />
-            <span>Puntuación media</span>
           </div>
           <div className="flex items-center">
             <div className="h-3 w-3 rounded-full bg-[#02B1C4] mr-1"></div>
-            <span>Número de reseñas</span>
           </div>
         </div>
       </CardHeader>
@@ -40,7 +38,10 @@ const CustomReviewChart = () => {
             <TabsTrigger value="3months">Últimos 3 meses</TabsTrigger>
           </TabsList>
           <div className="flex justify-between items-center mb-4">
-            <p className="text-sm text-[#2F2F4C]/70">Cantidad de reseñas diarias recibidas</p>
+            <div className="flex items-center text-sm text-[#2F2F4C]/70">
+              <Circle className="h-3 w-3 text-[#02B1C4] fill-[#02B1C4] mr-2" />
+              <span>Cantidad de reseñas diarias</span>
+            </div>
             {!isLoading && reviewStats.thirtyDays.some(item => item.reviews > 0) && (
               <div className="flex items-center gap-2">
                 <Star size={14} className="text-[#FFCE85] fill-[#FFCE85]" />
