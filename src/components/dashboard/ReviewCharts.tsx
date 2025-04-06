@@ -90,7 +90,7 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
   }, [data]);
   
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full pl-8">
       {/* Background grid for the chart */}
       <div className="absolute inset-0 grid grid-cols-6 grid-rows-5">
         {Array.from({ length: 30 }).map((_, i) => (
@@ -99,9 +99,9 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
       </div>
       
       {/* Y-axis labels */}
-      <div className="absolute -left-8 top-0 flex h-full flex-col justify-between py-2 text-xs text-[#2F2F4C]/70">
+      <div className="absolute -left-6 top-0 flex h-full flex-col justify-between py-2 text-xs text-[#2F2F4C]/70">
         {yAxisLabels.map((value, index) => (
-          <div key={index}>{value}</div>
+          <div key={index} className="w-6 text-right">{value}</div>
         ))}
       </div>
       
@@ -227,7 +227,7 @@ export const ThreeMonthsChart: React.FC<ChartProps> = ({ data }) => {
   }, [data]);
   
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full pl-8">
       {/* Background grid for the chart */}
       <div className="absolute inset-0 grid grid-cols-3 grid-rows-5">
         {Array.from({ length: 15 }).map((_, i) => (
@@ -236,9 +236,9 @@ export const ThreeMonthsChart: React.FC<ChartProps> = ({ data }) => {
       </div>
       
       {/* Y-axis labels */}
-      <div className="absolute -left-8 top-0 flex h-full flex-col justify-between py-2 text-xs text-[#2F2F4C]/70">
+      <div className="absolute -left-6 top-0 flex h-full flex-col justify-between py-2 text-xs text-[#2F2F4C]/70">
         {yAxisLabels.map((value, index) => (
-          <div key={index}>{value}</div>
+          <div key={index} className="w-6 text-right">{value}</div>
         ))}
       </div>
       
@@ -298,7 +298,7 @@ export const ThreeMonthsChart: React.FC<ChartProps> = ({ data }) => {
             </TooltipTrigger>
             <TooltipContent className="bg-white p-2 rounded-md shadow-lg border border-gray-200 text-sm">
               <div className="font-medium">{point.date}</div>
-              <div className="text-[#02B1C4]">{point.value} reseñas</div>
+              <div className="text-[#02B1C4]">{point.value} {point.value === 1 ? 'reseña' : 'reseñas'}</div>
               {point.rating > 0 && (
                 <div className="text-[#FF4797]">Puntuación media: {point.rating.toFixed(1)}</div>
               )}

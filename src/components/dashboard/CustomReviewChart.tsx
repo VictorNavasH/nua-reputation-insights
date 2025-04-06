@@ -46,7 +46,7 @@ const CustomReviewChart = () => {
           ) : (
             <>
               <TabsContent value="30days">
-                <div className="h-[300px] w-full relative">
+                <div className="h-[300px] w-full relative py-2 px-4">
                   {reviewStats.thirtyDays.length === 0 ? (
                     <div className="absolute inset-0 flex items-center justify-center text-gray-500">
                       No hay datos disponibles para este período
@@ -57,7 +57,7 @@ const CustomReviewChart = () => {
                 </div>
               </TabsContent>
               <TabsContent value="3months">
-                <div className="h-[300px] w-full relative">
+                <div className="h-[300px] w-full relative py-2 px-4">
                   {reviewStats.threeMonths.length === 0 ? (
                     <div className="absolute inset-0 flex items-center justify-center text-gray-500">
                       No hay datos disponibles para este período
