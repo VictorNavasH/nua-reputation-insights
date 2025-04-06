@@ -52,7 +52,7 @@ const ReviewsKPI = () => {
                 </div>
               </div>
             </div>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#E0E5EB] transition-colors">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#b2f7ef] transition-colors">
               <ChevronUp className="h-5 w-5 text-[#02B1C4]" />
             </div>
           </div>
@@ -79,7 +79,7 @@ const ReviewsKPI = () => {
                 <p className="text-2xl font-bold text-[#2F2F4C]">{kpiData.totalReviews}</p>
               </div>
             </div>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#E0E5EB] transition-colors">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#b2f7ef] transition-colors">
               <ChevronUp className="h-5 w-5 text-[#FFCB77]" />
             </div>
           </div>
@@ -106,7 +106,7 @@ const ReviewsKPI = () => {
                 <p className="text-2xl font-bold text-[#2F2F4C]">{kpiData.positivePercentage}%</p>
               </div>
             </div>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#E0E5EB] transition-colors">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#b2f7ef] transition-colors">
               <ChevronUp className="h-5 w-5 text-[#02B1C4]" />
             </div>
           </div>
@@ -133,7 +133,7 @@ const ReviewsKPI = () => {
                 <p className="text-2xl font-bold text-[#2F2F4C]">{kpiData.monthlyTarget}</p>
               </div>
             </div>
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#E0E5EB] transition-colors">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#b2f7ef] transition-colors">
               <ChevronUp className="h-5 w-5 text-[#FF4797]" />
             </div>
           </div>
