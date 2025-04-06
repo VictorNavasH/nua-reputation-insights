@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { MessageSquare, Sparkles, Languages } from 'lucide-react';
+import { MessageSquare, Sparkles, Languages, Globe } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -31,7 +30,7 @@ const ReviewResponseDialog = ({ isOpen, onClose, review, onRespond }: ReviewResp
   const [isGenerating, setIsGenerating] = useState(false);
   const [showTranslated, setShowTranslated] = useState(false);
 
-  // Function to check if the review is in Spanish or Catalan
+  // Function to check if the review is in non-Spanish/Catalan language
   const isNonSpanishOrCatalan = () => {
     if (!review?.idioma) return false;
     const lang = review.idioma.toLowerCase();
@@ -99,16 +98,15 @@ const ReviewResponseDialog = ({ isOpen, onClose, review, onRespond }: ReviewResp
 
   if (!review) return null;
 
-  // For debugging - log the review object to see its contents
-  console.log('Review in dialog:', review);
-  console.log('Is non-Spanish/Catalan:', isNonSpanishOrCatalan());
-  console.log('Has translation:', Boolean(review.reseña_traducida));
-
-  const hasTranslation = Boolean(review.reseña_traducida);
-  const shouldShowTranslationButton = isNonSpanishOrCatalan() && hasTranslation;
+  // Non-Spanish/Catalan review that needs translation option
+  const isNonNativeLanguage = isNonSpanishOrCatalan();
   
-  // Debug the translation button conditions
-  console.log('Should show translation button:', shouldShowTranslationButton);
+  // We'll show the translation button whenever the review is in a non-native language
+  // regardless of whether we already have a translation
+  const shouldShowTranslationButton = isNonNativeLanguage;
+  
+  // For display purposes
+  const hasExistingTranslation = Boolean(review.reseña_traducida && review.reseña_traducida.trim() !== '');
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -132,17 +130,17 @@ const ReviewResponseDialog = ({ isOpen, onClose, review, onRespond }: ReviewResp
                   onClick={toggleTranslation}
                   className="flex items-center gap-1 text-xs"
                 >
-                  <Languages size={14} />
-                  {showTranslated ? 'Ver original' : 'Traducir'}
+                  <Globe size={14} />
+                  {showTranslated && hasExistingTranslation ? 'Ver original' : 'Traducir'}
                 </Button>
               )}
             </div>
             <p className="text-sm text-gray-600">
-              {shouldShowTranslationButton && showTranslated 
+              {(showTranslated && hasExistingTranslation) 
                 ? review.reseña_traducida 
                 : review.review}
             </p>
-            {isNonSpanishOrCatalan() && (
+            {isNonNativeLanguage && (
               <div className="mt-1 text-xs text-gray-400 flex items-center">
                 <Languages size={12} className="mr-1" />
                 {review.idioma?.toUpperCase() || 'Idioma desconocido'}
