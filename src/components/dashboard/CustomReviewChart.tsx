@@ -10,6 +10,8 @@ import { useReviews } from '@/hooks/useReviews';
 const CustomReviewChart = () => {
   const { reviewStats, isLoading } = useReviews();
   
+  console.log("Review stats in CustomReviewChart:", reviewStats);
+  
   return (
     <Card className="overflow-hidden rounded-2xl border-none shadow-md mb-8">
       <CardHeader className="flex flex-row items-center justify-between pb-2">
@@ -34,13 +36,25 @@ const CustomReviewChart = () => {
           ) : (
             <>
               <TabsContent value="30days">
-                <div className="h-[300px] w-full">
-                  <ThirtyDaysChart data={reviewStats.thirtyDays} />
+                <div className="h-[300px] w-full relative">
+                  {reviewStats.thirtyDays.length === 0 ? (
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-500">
+                      No hay datos disponibles para este período
+                    </div>
+                  ) : (
+                    <ThirtyDaysChart data={reviewStats.thirtyDays} />
+                  )}
                 </div>
               </TabsContent>
               <TabsContent value="3months">
-                <div className="h-[300px] w-full">
-                  <ThreeMonthsChart data={reviewStats.threeMonths} />
+                <div className="h-[300px] w-full relative">
+                  {reviewStats.threeMonths.length === 0 ? (
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-500">
+                      No hay datos disponibles para este período
+                    </div>
+                  ) : (
+                    <ThreeMonthsChart data={reviewStats.threeMonths} />
+                  )}
                 </div>
               </TabsContent>
             </>

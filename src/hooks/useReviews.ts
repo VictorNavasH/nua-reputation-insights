@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
 import { formatDate, determineSentiment } from '@/utils/reviewUtils';
 import { toast } from 'sonner';
+import { TimeSeriesPoint } from '@/types/dashboard';
 
 export interface Review {
   id: number;
@@ -28,11 +29,13 @@ export function useReviews() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [reviewStats, setReviewStats] = useState<{
-    thirtyDays: ReviewStats[];
-    threeMonths: ReviewStats[];
+    thirtyDays: TimeSeriesPoint[];
+    threeMonths: TimeSeriesPoint[];
+    year: TimeSeriesPoint[];
   }>({
     thirtyDays: [],
-    threeMonths: []
+    threeMonths: [],
+    year: []
   });
 
   useEffect(() => {
@@ -49,6 +52,8 @@ export function useReviews() {
           throw error;
         }
         
+        console.log("Raw data from Supabase:", data);
+        
         // Transform the data to match the Review interface
         const formattedReviews = data.map((item, index) => ({
           id: index + 1,
@@ -62,6 +67,8 @@ export function useReviews() {
           profile_url: item.url_perfil || '',
           photo: item.foto_autor || '',
         }));
+        
+        console.log("Formatted reviews:", formattedReviews);
         
         // Generate stats for charts
         generateReviewStats(formattedReviews);
@@ -82,10 +89,12 @@ export function useReviews() {
   // Helper function to generate stats for charts
   const generateReviewStats = (reviews: Review[]) => {
     // Generate last 30 days data
-    const thirtyDaysData: ReviewStats[] = [];
+    const thirtyDaysData: TimeSeriesPoint[] = [];
     const now = new Date();
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(now.getDate() - 30);
+    
+    console.log("Generating stats for 30 days from", thirtyDaysAgo, "to", now);
     
     // Create a map for each day in the last 30 days
     for (let i = 0; i < 30; i++) {
@@ -100,21 +109,51 @@ export function useReviews() {
       });
     }
     
+    console.log("Empty 30 days structure:", thirtyDaysData);
+    
     // Count reviews for each day
     reviews.forEach(review => {
       try {
-        // Extract date parts from the review date
-        const reviewDate = new Date(review.date.split(' ')[0]);
-        const formattedReviewDate = reviewDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+        // Parse the date string to a Date object
+        // The format is expected to be like "5 abr 2024" from formatDate function
+        console.log("Processing review date:", review.date);
         
-        // Find matching day in our prepared array
-        const dayIndex = thirtyDaysData.findIndex(day => day.date === formattedReviewDate);
-        if (dayIndex !== -1) {
-          thirtyDaysData[dayIndex].reviews += 1;
-          thirtyDaysData[dayIndex].rating += review.rating;
+        // Extract date parts from the review date
+        const dateParts = review.date.split(' ');
+        if (dateParts.length >= 3) {
+          // Spanish month abbreviations to numbers
+          const monthMap: { [key: string]: number } = {
+            'ene': 0, 'feb': 1, 'mar': 2, 'abr': 3, 'may': 4, 'jun': 5,
+            'jul': 6, 'ago': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dic': 11
+          };
+          
+          const day = parseInt(dateParts[0]);
+          const month = monthMap[dateParts[1].toLowerCase()];
+          const year = parseInt(dateParts[2]);
+          
+          if (!isNaN(day) && month !== undefined && !isNaN(year)) {
+            const reviewDate = new Date(year, month, day);
+            console.log("Parsed review date:", reviewDate);
+            
+            // Check if the date is within the last 30 days
+            if (reviewDate >= thirtyDaysAgo && reviewDate <= now) {
+              const formattedReviewDate = reviewDate.toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
+              console.log("Formatted review date for comparison:", formattedReviewDate);
+              
+              // Find matching day in our prepared array
+              const dayIndex = thirtyDaysData.findIndex(day => day.date === formattedReviewDate);
+              console.log("Found at index:", dayIndex);
+              
+              if (dayIndex !== -1) {
+                thirtyDaysData[dayIndex].reviews += 1;
+                thirtyDaysData[dayIndex].rating = thirtyDaysData[dayIndex].rating || 0;
+                thirtyDaysData[dayIndex].rating += review.rating;
+              }
+            }
+          }
         }
       } catch (err) {
-        console.error('Error processing review date:', err);
+        console.error('Error processing review date:', err, review.date);
       }
     });
     
@@ -125,8 +164,10 @@ export function useReviews() {
       }
     });
     
+    console.log("Final 30 days data:", thirtyDaysData);
+    
     // Generate last 3 months data
-    const threeMonthsData: ReviewStats[] = [];
+    const threeMonthsData: TimeSeriesPoint[] = [];
     const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
     
     // Create last 3 months
@@ -144,13 +185,28 @@ export function useReviews() {
     // Count reviews for each month
     reviews.forEach(review => {
       try {
-        const reviewDate = new Date(review.date.split(' ')[0]);
-        const monthsAgo = (now.getFullYear() - reviewDate.getFullYear()) * 12 + now.getMonth() - reviewDate.getMonth();
-        
-        if (monthsAgo >= 0 && monthsAgo < 3) {
-          const monthIndex = 2 - monthsAgo; // Convert to index in our array
-          threeMonthsData[monthIndex].reviews += 1;
-          threeMonthsData[monthIndex].rating += review.rating;
+        const dateParts = review.date.split(' ');
+        if (dateParts.length >= 3) {
+          // Spanish month abbreviations to numbers
+          const monthMap: { [key: string]: number } = {
+            'ene': 0, 'feb': 1, 'mar': 2, 'abr': 3, 'may': 4, 'jun': 5,
+            'jul': 6, 'ago': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dic': 11
+          };
+          
+          const month = monthMap[dateParts[1].toLowerCase()];
+          const year = parseInt(dateParts[2]);
+          
+          if (month !== undefined && !isNaN(year)) {
+            const reviewDate = new Date(year, month, 1);
+            const monthsAgo = (now.getFullYear() - reviewDate.getFullYear()) * 12 + now.getMonth() - reviewDate.getMonth();
+            
+            if (monthsAgo >= 0 && monthsAgo < 3) {
+              const monthIndex = 2 - monthsAgo; // Convert to index in our array
+              threeMonthsData[monthIndex].reviews += 1;
+              threeMonthsData[monthIndex].rating = threeMonthsData[monthIndex].rating || 0;
+              threeMonthsData[monthIndex].rating += review.rating;
+            }
+          }
         }
       } catch (err) {
         console.error('Error processing review date for monthly stats:', err);
@@ -164,9 +220,51 @@ export function useReviews() {
       }
     });
     
+    console.log("Three months data:", threeMonthsData);
+    
+    // Generate yearly data (dummy data for now)
+    const yearData: TimeSeriesPoint[] = monthNames.map(month => ({
+      date: month,
+      reviews: 0,
+      rating: 0
+    }));
+    
+    // Populate with actual data where available
+    reviews.forEach(review => {
+      try {
+        const dateParts = review.date.split(' ');
+        if (dateParts.length >= 3) {
+          const monthMap: { [key: string]: number } = {
+            'ene': 0, 'feb': 1, 'mar': 2, 'abr': 3, 'may': 4, 'jun': 5,
+            'jul': 6, 'ago': 7, 'sep': 8, 'oct': 9, 'nov': 10, 'dic': 11
+          };
+          
+          const month = monthMap[dateParts[1].toLowerCase()];
+          
+          if (month !== undefined) {
+            yearData[month].reviews += 1;
+            yearData[month].rating = yearData[month].rating || 0;
+            yearData[month].rating += review.rating;
+          }
+        }
+      } catch (err) {
+        console.error('Error processing review date for yearly stats:', err);
+      }
+    });
+    
+    // Calculate average ratings for year
+    yearData.forEach(month => {
+      if (month.reviews > 0) {
+        month.rating = parseFloat((month.rating / month.reviews).toFixed(1));
+      }
+    });
+    
+    console.log("Year data:", yearData);
+    
     setReviewStats({
       thirtyDays: thirtyDaysData,
-      threeMonths: threeMonthsData
+      threeMonths: threeMonthsData,
+      year: yearData
     });
   };
 

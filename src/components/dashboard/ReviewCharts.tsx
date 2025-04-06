@@ -9,30 +9,37 @@ interface ChartProps {
 
 // Chart component for 30 days view
 export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
-  // Extraemos los puntos de datos clave para mapearlos a las posiciones de los puntos en el SVG
+  console.log("30 Days data in chart:", data);
+  
+  // Extract data points for mapping to SVG positions
   const dataPoints = React.useMemo(() => {
-    // Seleccionar puntos representativos para mostrar en el gráfico
+    // Select representative points to show on the chart
     const points = [];
     
-    // Asegúrate de incluir al menos algunos puntos para una visualización adecuada
+    // Make sure there are data points to show
     if (data.length > 0) {
-      // Añadir el primer punto
+      // Find the maximum review count for scaling
+      const maxReviews = Math.max(...data.map(item => item.reviews));
+      // Use at least 10 as the max scale or the actual maximum if higher
+      const yScale = maxReviews < 10 ? 10 : maxReviews;
+      
+      // Add the first point
       points.push({
         x: 0,
-        y: 100 - (data[0].reviews * 10), // Convertir a posición Y (invertida para el SVG)
+        y: 100 - ((data[0].reviews / yScale) * 100), // Convert to Y position (inverted for SVG)
         value: data[0].reviews,
         date: data[0].date,
         rating: data[0].rating || 0
       });
       
-      // Añadir puntos intermedios
+      // Add intermediate points
       const step = Math.floor(data.length / 5);
       for (let i = 1; i < 5; i++) {
         const index = i * step;
         if (index < data.length) {
           points.push({
             x: (index / (data.length - 1)) * 100,
-            y: 100 - (data[index].reviews * 10),
+            y: 100 - ((data[index].reviews / yScale) * 100),
             value: data[index].reviews,
             date: data[index].date,
             rating: data[index].rating || 0
@@ -40,11 +47,11 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
         }
       }
       
-      // Añadir el último punto
+      // Add the last point
       const lastIndex = data.length - 1;
       points.push({
         x: 100,
-        y: 100 - (data[lastIndex].reviews * 10),
+        y: 100 - ((data[lastIndex].reviews / yScale) * 100),
         value: data[lastIndex].reviews,
         date: data[lastIndex].date,
         rating: data[lastIndex].rating || 0
@@ -54,7 +61,9 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
     return points;
   }, [data]);
   
-  // Crear el path SVG para la línea y el área
+  console.log("Calculated dataPoints for chart:", dataPoints);
+  
+  // Create SVG path for the line and area
   const linePath = React.useMemo(() => {
     if (dataPoints.length < 2) return "";
     return dataPoints.map((point, i) => 
@@ -67,6 +76,19 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
     return linePath + ` L${dataPoints[dataPoints.length-1].x},100 L0,100 Z`;
   }, [linePath, dataPoints]);
   
+  // Get the y-axis labels based on the data
+  const yAxisLabels = React.useMemo(() => {
+    if (data.length === 0) return [0, 2, 4, 6, 8, 10];
+    
+    // Find the maximum number of reviews
+    const maxReviews = Math.max(...data.map(item => item.reviews));
+    // Round up to a nice number
+    const maxScale = maxReviews < 10 ? 10 : Math.ceil(maxReviews / 5) * 5;
+    
+    // Create 6 evenly spaced labels
+    return Array.from({ length: 6 }, (_, i) => Math.round((5 - i) * maxScale / 5));
+  }, [data]);
+  
   return (
     <div className="relative h-full w-full">
       {/* Background grid for the chart */}
@@ -78,12 +100,9 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
       
       {/* Y-axis labels */}
       <div className="absolute -left-8 top-0 flex h-full flex-col justify-between py-2 text-xs text-[#2F2F4C]/70">
-        <div>10</div>
-        <div>8</div>
-        <div>6</div>
-        <div>4</div>
-        <div>2</div>
-        <div>0</div>
+        {yAxisLabels.map((value, index) => (
+          <div key={index}>{value}</div>
+        ))}
       </div>
       
       {/* X-axis labels */}
@@ -163,18 +182,25 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
 
 // Chart component for 3 months view
 export const ThreeMonthsChart: React.FC<ChartProps> = ({ data }) => {
-  // Para la vista de 3 meses, los puntos son más simples
+  console.log("3 Months data in chart:", data);
+  
+  // For the 3-month view, points are simpler
   const dataPoints = React.useMemo(() => {
+    // Find the maximum review count for scaling
+    const maxReviews = data.length > 0 ? Math.max(...data.map(item => item.reviews)) : 50;
+    // Use at least 50 as the max scale or the actual maximum if higher
+    const yScale = maxReviews < 50 ? 50 : maxReviews;
+    
     return data.map((item, index) => ({
-      x: (index / (data.length - 1)) * 100,
-      y: 100 - (item.reviews / 2), // Escala diferente para datos mensuales
+      x: (index / Math.max(1, data.length - 1)) * 100, // Avoid division by zero
+      y: 100 - ((item.reviews / yScale) * 100), // Scale reviews value to percentage
       value: item.reviews,
       date: item.date,
       rating: item.rating || 0
     }));
   }, [data]);
   
-  // Crear el path SVG para la línea y el área
+  // Create SVG path for the line and area
   const linePath = React.useMemo(() => {
     if (dataPoints.length < 2) return "";
     return dataPoints.map((point, i) => 
@@ -187,6 +213,19 @@ export const ThreeMonthsChart: React.FC<ChartProps> = ({ data }) => {
     return linePath + ` L${dataPoints[dataPoints.length-1].x},100 L0,100 Z`;
   }, [linePath, dataPoints]);
   
+  // Get the y-axis labels based on the data
+  const yAxisLabels = React.useMemo(() => {
+    if (data.length === 0) return [0, 10, 20, 30, 40, 50];
+    
+    // Find the maximum number of reviews
+    const maxReviews = Math.max(...data.map(item => item.reviews));
+    // Round up to a nice number
+    const maxScale = maxReviews < 50 ? 50 : Math.ceil(maxReviews / 10) * 10;
+    
+    // Create 6 evenly spaced labels
+    return Array.from({ length: 6 }, (_, i) => Math.round((5 - i) * maxScale / 5));
+  }, [data]);
+  
   return (
     <div className="relative h-full w-full">
       {/* Background grid for the chart */}
@@ -198,12 +237,9 @@ export const ThreeMonthsChart: React.FC<ChartProps> = ({ data }) => {
       
       {/* Y-axis labels */}
       <div className="absolute -left-8 top-0 flex h-full flex-col justify-between py-2 text-xs text-[#2F2F4C]/70">
-        <div>50</div>
-        <div>40</div>
-        <div>30</div>
-        <div>20</div>
-        <div>10</div>
-        <div>0</div>
+        {yAxisLabels.map((value, index) => (
+          <div key={index}>{value}</div>
+        ))}
       </div>
       
       {/* X-axis labels */}
