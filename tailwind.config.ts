@@ -86,7 +86,9 @@ export default {
 					teal2: '#17C3B2',
 					orange2: '#FFCB77',
 					white: '#FEF9EF',
-					red2: '#FE6D73'
+					red2: '#FE6D73',
+					// New custom color
+					mint: '#98f5e1'
 				}
 			},
 			fontFamily: {
@@ -120,3 +122,4 @@ export default {
 	},
 	plugins: [require("tailwindcss-animate")],
 } satisfies Config;
+
