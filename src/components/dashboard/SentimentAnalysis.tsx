@@ -36,18 +36,14 @@ const SentimentAnalysis = () => {
                 <Pie
                   data={data}
                   cx="50%"
-                  cy="45%" 
-                  {/* Moved up slightly to create more space */}
-                  labelLine={false} 
-                  {/* Removed label lines for cleaner look */}
+                  cy="45%"
+                  labelLine={false}
                   outerRadius={75}
-                  innerRadius={25} 
-                  {/* Added inner radius to create a donut chart */}
+                  innerRadius={25}
                   paddingAngle={3}
                   fill="#8884d8"
                   dataKey="value"
-                  label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`} 
-                  {/* Simplified label */}
+                  label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
                   onMouseEnter={onPieEnter}
                   onMouseLeave={onPieLeave}
                   isAnimationActive={true}
