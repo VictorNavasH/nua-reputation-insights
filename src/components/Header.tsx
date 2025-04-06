@@ -40,10 +40,9 @@ const Header = () => {
       </div>
 
       <div className="flex items-center space-x-4">
-        {/* Notifications */}
-        <Button variant="ghost" size="icon" className="relative">
+        {/* Notifications - removed the red dot */}
+        <Button variant="ghost" size="icon">
           <Bell size={20} className="text-[#2F2F4C]" />
-          <span className="absolute top-0 right-0 h-2.5 w-2.5 bg-[#FE6D73] rounded-full"></span>
         </Button>
         
         {/* Location selector */}
