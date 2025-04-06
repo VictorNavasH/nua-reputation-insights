@@ -5,6 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AreaChart, Star } from 'lucide-react';
 import { ThirtyDaysChart, ThreeMonthsChart } from './ReviewCharts';
 import { useReviews } from '@/hooks/useReviews';
+import { TimeSeriesPoint } from '@/types/dashboard';
 
 // Main component that wraps the chart in a card
 const CustomReviewChart = () => {
@@ -85,13 +86,13 @@ const CustomReviewChart = () => {
   );
 };
 
-// Helper function to calculate average rating
-const calculateAverageRating = (data: Array<{ reviews: number; rating: number }>) => {
-  const reviewsWithRatings = data.filter(item => item.reviews > 0 && item.rating > 0);
+// Helper function to calculate average rating, modified to handle optional rating property
+const calculateAverageRating = (data: TimeSeriesPoint[]) => {
+  const reviewsWithRatings = data.filter(item => item.reviews > 0 && item.rating !== undefined && item.rating > 0);
   
   if (reviewsWithRatings.length === 0) return "N/A";
   
-  const totalRating = reviewsWithRatings.reduce((sum, item) => sum + item.rating, 0);
+  const totalRating = reviewsWithRatings.reduce((sum, item) => sum + (item.rating || 0), 0);
   const average = totalRating / reviewsWithRatings.length;
   
   return average.toFixed(1);
