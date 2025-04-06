@@ -28,7 +28,7 @@ const RatingGoalCard = ({ currentRating, targetRating, totalReviews }: RatingGoa
   const percentage = Math.min(100, Math.round((currentRating / targetRating) * 100));
   
   return (
-    <Card className="overflow-hidden rounded-2xl border-none shadow-md bg-white">
+    <Card className="overflow-hidden rounded-2xl border-none shadow-md bg-white h-full">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <div className="flex items-center">
           <TrendingUp className="h-5 w-5 mr-2 text-[#FF4797]" />

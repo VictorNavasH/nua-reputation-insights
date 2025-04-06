@@ -16,7 +16,7 @@ const ProgressCard = () => {
   };
   
   return (
-    <Card className="overflow-hidden rounded-2xl border-none shadow-md bg-white mb-8">
+    <Card className="overflow-hidden rounded-2xl border-none shadow-md bg-white h-full">
       <CardHeader className="pb-2 flex flex-row items-center justify-between">
         <div className="flex items-center">
           <TrendingUp className="h-5 w-5 mr-2 text-[#02B1C4]" />
