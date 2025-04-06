@@ -6,7 +6,8 @@ import { toast } from 'sonner';
 import { Review, ReviewStatsTimeSeries } from '@/types/reviews';
 import { generateReviewStats } from '@/utils/reviewStatsGenerator';
 
-export { Review } from '@/types/reviews';
+// Use 'export type' to re-export the type correctly with isolatedModules enabled
+export type { Review } from '@/types/reviews';
 
 export function useReviews() {
   const [reviews, setReviews] = useState<Review[]>([]);
