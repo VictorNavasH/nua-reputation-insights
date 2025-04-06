@@ -1,7 +1,8 @@
-
 import React from 'react';
 import { TimeSeriesPoint } from '@/types/dashboard';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from '@/components/ui/hover-card';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 interface ChartProps {
   data: TimeSeriesPoint[];
@@ -181,7 +182,7 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
         </defs>
       </svg>
       
-      {/* Data points with tooltips */}
+      {/* Data points with enhanced tooltips */}
       <TooltipProvider>
         {dataPoints.map((point, i) => (
           <Tooltip key={i}>
@@ -197,17 +198,23 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
                 }}
               />
             </TooltipTrigger>
-            <TooltipContent className="bg-white p-2 rounded-md shadow-lg border border-gray-200 text-sm">
-              <div className="font-medium">{point.date}</div>
-              <div className="text-[#02B1C4]">{point.value} {point.value === 1 ? 'reseña' : 'reseñas'}</div>
+            <TooltipContent className="bg-white p-3 rounded-md shadow-lg border border-gray-200 text-sm min-w-[180px]">
+              <div className="font-semibold text-[#2F2F4C] mb-1">{point.date}</div>
+              <div className="flex items-center text-[#02B1C4] font-medium">
+                <span className="w-4 h-4 rounded-full bg-[#02B1C4] mr-2 flex-shrink-0"></span>
+                <span>{point.value} {point.value === 1 ? 'reseña' : 'reseñas'}</span>
+              </div>
               {point.rating > 0 && (
-                <div className="text-[#FF4797]">Puntuación: {point.rating.toFixed(1)}</div>
+                <div className="flex items-center text-[#FF4797] font-medium mt-1">
+                  <span className="text-[#FFCE85] mr-2">★</span>
+                  <span>Puntuación: {point.rating.toFixed(1)}</span>
+                </div>
               )}
             </TooltipContent>
           </Tooltip>
         ))}
         
-        {/* Rating points with tooltips */}
+        {/* Rating points with enhanced tooltips */}
         {ratingPoints.map((point, i) => (
           <Tooltip key={`rating-${i}`}>
             <TooltipTrigger asChild>
@@ -222,9 +229,16 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
                 }}
               />
             </TooltipTrigger>
-            <TooltipContent className="bg-white p-2 rounded-md shadow-lg border border-gray-200 text-sm">
-              <div className="font-medium">{point.date}</div>
-              <div className="text-[#FF4797]">Puntuación: {point.rating.toFixed(1)}</div>
+            <TooltipContent className="bg-white p-3 rounded-md shadow-lg border border-gray-200 text-sm min-w-[180px]">
+              <div className="font-semibold text-[#2F2F4C] mb-1">{point.date}</div>
+              <div className="flex items-center text-[#02B1C4] font-medium">
+                <span className="w-4 h-4 rounded-full bg-[#02B1C4] mr-2 flex-shrink-0"></span>
+                <span>{point.value} {point.value === 1 ? 'reseña' : 'reseñas'}</span>
+              </div>
+              <div className="flex items-center text-[#FF4797] font-medium mt-1">
+                <span className="text-[#FFCE85] mr-2">★</span>
+                <span>Puntuación: {point.rating.toFixed(1)}</span>
+              </div>
             </TooltipContent>
           </Tooltip>
         ))}
@@ -362,7 +376,7 @@ export const ThreeMonthsChart: React.FC<ChartProps> = ({ data }) => {
         </defs>
       </svg>
       
-      {/* Data points with tooltips */}
+      {/* Data points with enhanced tooltips */}
       <TooltipProvider>
         {dataPoints.map((point, i) => (
           <Tooltip key={i}>
@@ -378,17 +392,23 @@ export const ThreeMonthsChart: React.FC<ChartProps> = ({ data }) => {
                 }}
               />
             </TooltipTrigger>
-            <TooltipContent className="bg-white p-2 rounded-md shadow-lg border border-gray-200 text-sm">
-              <div className="font-medium">{point.date}</div>
-              <div className="text-[#02B1C4]">{point.value} {point.value === 1 ? 'reseña' : 'reseñas'}</div>
+            <TooltipContent className="bg-white p-3 rounded-md shadow-lg border border-gray-200 text-sm min-w-[180px]">
+              <div className="font-semibold text-[#2F2F4C] mb-1">{point.date}</div>
+              <div className="flex items-center text-[#02B1C4] font-medium">
+                <span className="w-4 h-4 rounded-full bg-[#02B1C4] mr-2 flex-shrink-0"></span>
+                <span>{point.value} {point.value === 1 ? 'reseña' : 'reseñas'}</span>
+              </div>
               {point.rating > 0 && (
-                <div className="text-[#FF4797]">Puntuación media: {point.rating.toFixed(1)}</div>
+                <div className="flex items-center text-[#FF4797] font-medium mt-1">
+                  <span className="text-[#FFCE85] mr-2">★</span>
+                  <span>Puntuación media: {point.rating.toFixed(1)}</span>
+                </div>
               )}
             </TooltipContent>
           </Tooltip>
         ))}
         
-        {/* Rating points with tooltips */}
+        {/* Rating points with enhanced tooltips */}
         {ratingPoints.map((point, i) => (
           <Tooltip key={`rating-${i}`}>
             <TooltipTrigger asChild>
@@ -403,9 +423,16 @@ export const ThreeMonthsChart: React.FC<ChartProps> = ({ data }) => {
                 }}
               />
             </TooltipTrigger>
-            <TooltipContent className="bg-white p-2 rounded-md shadow-lg border border-gray-200 text-sm">
-              <div className="font-medium">{point.date}</div>
-              <div className="text-[#FF4797]">Puntuación: {point.rating.toFixed(1)}</div>
+            <TooltipContent className="bg-white p-3 rounded-md shadow-lg border border-gray-200 text-sm min-w-[180px]">
+              <div className="font-semibold text-[#2F2F4C] mb-1">{point.date}</div>
+              <div className="flex items-center text-[#02B1C4] font-medium">
+                <span className="w-4 h-4 rounded-full bg-[#02B1C4] mr-2 flex-shrink-0"></span>
+                <span>{point.value} {point.value === 1 ? 'reseña' : 'reseñas'}</span>
+              </div>
+              <div className="flex items-center text-[#FF4797] font-medium mt-1">
+                <span className="text-[#FFCE85] mr-2">★</span>
+                <span>Puntuación: {point.rating.toFixed(1)}</span>
+              </div>
             </TooltipContent>
           </Tooltip>
         ))}
