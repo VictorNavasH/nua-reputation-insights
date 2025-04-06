@@ -1,6 +1,5 @@
-
-import React, { useState } from 'react';
-import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh, Languages } from 'lucide-react';
+import React from 'react';
+import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -26,20 +25,6 @@ interface ReviewsCardsProps {
 }
 
 const ReviewsCards = ({ reviews, onOpenResponseDialog }: ReviewsCardsProps) => {
-  const [translatedReviews, setTranslatedReviews] = useState<number[]>([]);
-  
-  const toggleTranslation = (reviewId: number) => {
-    setTranslatedReviews(prev => 
-      prev.includes(reviewId) 
-        ? prev.filter(id => id !== reviewId) 
-        : [...prev, reviewId]
-    );
-  };
-
-  const needsTranslation = (language?: string) => {
-    return language && !['es', 'ca'].includes(language.toLowerCase());
-  };
-
   const renderStars = (rating: number) => {
     return Array(5).fill(0).map((_, index) => (
       <Star 
@@ -93,9 +78,7 @@ const ReviewsCards = ({ reviews, onOpenResponseDialog }: ReviewsCardsProps) => {
               <div className="mb-4">
                 <div className="relative">
                   <p className="text-sm">
-                    {translatedReviews.includes(review.id) && review.reseña_traducida 
-                      ? review.reseña_traducida 
-                      : review.review}
+                    {review.review}
                   </p>
                 </div>
               </div>
@@ -106,17 +89,6 @@ const ReviewsCards = ({ reviews, onOpenResponseDialog }: ReviewsCardsProps) => {
                   {renderSentiment(review.sentiment)}
                 </div>
                 <div className="flex gap-2">
-                  {needsTranslation(review.idioma) && (
-                    <Button 
-                      variant="outline" 
-                      size="sm"
-                      className="gap-2"
-                      onClick={() => toggleTranslation(review.id)}
-                    >
-                      <Languages size={14} />
-                      {translatedReviews.includes(review.id) ? "Ver original" : "Traducir"}
-                    </Button>
-                  )}
                   <Button 
                     variant={review.responded ? "outline" : "default"} 
                     size="sm"

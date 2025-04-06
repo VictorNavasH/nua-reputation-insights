@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh, Languages } from 'lucide-react';
+import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card } from '@/components/ui/card';
@@ -27,20 +26,8 @@ interface ReviewsTableProps {
 }
 
 const ReviewsTable = ({ reviews, onOpenResponseDialog }: ReviewsTableProps) => {
-  const [translatedReviews, setTranslatedReviews] = useState<number[]>([]);
+  // Remove the translation state and functions
   
-  const toggleTranslation = (reviewId: number) => {
-    setTranslatedReviews(prev => 
-      prev.includes(reviewId) 
-        ? prev.filter(id => id !== reviewId) 
-        : [...prev, reviewId]
-    );
-  };
-
-  const needsTranslation = (language?: string) => {
-    return language && !['es', 'ca'].includes(language.toLowerCase());
-  };
-
   const renderStars = (rating: number) => {
     return Array(5).fill(0).map((_, index) => (
       <Star 
@@ -106,26 +93,14 @@ const ReviewsTable = ({ reviews, onOpenResponseDialog }: ReviewsTableProps) => {
                 <TableCell className="max-w-xs">
                   <div className="relative">
                     <p className="truncate">
-                      {translatedReviews.includes(review.id) && review.reseña_traducida 
-                        ? review.reseña_traducida 
-                        : review.review}
+                      {review.review}
                     </p>
                   </div>
                 </TableCell>
                 <TableCell>{renderSentiment(review.sentiment)}</TableCell>
                 <TableCell>
                   <div className="flex gap-2">
-                    {needsTranslation(review.idioma) && (
-                      <Button 
-                        variant="outline" 
-                        size="sm"
-                        className="gap-2"
-                        onClick={() => toggleTranslation(review.id)}
-                      >
-                        <Languages size={14} />
-                        {translatedReviews.includes(review.id) ? "Ver original" : "Traducir"}
-                      </Button>
-                    )}
+                    {/* Removed translation buttons */}
                     <Button 
                       variant={review.responded ? "outline" : "default"} 
                       size="sm"
