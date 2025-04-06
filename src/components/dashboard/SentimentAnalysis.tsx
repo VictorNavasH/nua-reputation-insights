@@ -1,9 +1,9 @@
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
-const data = [
+const sentimentData = [
   { name: 'Positivo', value: 78, color: '#02B1C4' },
   { name: 'Neutro', value: 15, color: '#8CA6C5' },
   { name: 'Negativo', value: 7, color: '#FE6D73' },
@@ -30,32 +30,31 @@ const SentimentAnalysis = () => {
         </CardHeader>
         <CardContent>
           <div className="h-[340px] mt-2">
-            {/* Increased height for better layout */}
+            {/* Chart container with increased height for better layout */}
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
-                  data={data}
+                  data={sentimentData}
                   cx="50%"
-                  cy="45%"
-                  labelLine={false}
+                  cy="45%" // Moved up slightly to create more space
+                  labelLine={false} // Removed label lines for cleaner look
                   outerRadius={75}
-                  innerRadius={25}
+                  innerRadius={25} // Added inner radius to create a donut chart
                   paddingAngle={3}
                   fill="#8884d8"
                   dataKey="value"
-                  label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`} // Simplified label
                   onMouseEnter={onPieEnter}
                   onMouseLeave={onPieLeave}
                   isAnimationActive={true}
                   animationDuration={300}
                 >
-                  {data.map((entry, index) => (
+                  {sentimentData.map((entry, index) => (
                     <Cell 
                       key={`cell-${index}`} 
                       fill={entry.color}
                       stroke={activeIndex === index ? "#FFFFFF" : "none"}
                       strokeWidth={activeIndex === index ? 2 : 0}
-                      // Scale up the active segment slightly
                       {...(activeIndex === index && { 
                         style: { 
                           transform: 'scale(1.05)', 
@@ -82,7 +81,7 @@ const SentimentAnalysis = () => {
           </div>
           
           <div className="mt-6 flex justify-center space-x-6">
-            {data.map((item, index) => (
+            {sentimentData.map((item, index) => (
               <div 
                 key={index} 
                 className="flex items-center cursor-pointer transition-all duration-200 hover:scale-110" 
