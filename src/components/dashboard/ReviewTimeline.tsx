@@ -9,7 +9,8 @@ import {
   CartesianGrid, 
   Tooltip, 
   ResponsiveContainer,
-  Legend
+  Legend,
+  TooltipProps
 } from 'recharts';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -45,6 +46,26 @@ const lastYearData = [
   { date: 'Jun', reviews: 35, rating: 4.6 }
 ];
 
+// Custom tooltip component
+const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white p-3 shadow-md rounded-lg border border-gray-100">
+        <p className="text-sm font-semibold text-[#2F2F4C]">{label}</p>
+        <div className="mt-1 space-y-1">
+          <p className="text-xs">
+            <span className="font-medium text-[#02B1C4]">Reseñas:</span> {payload[0].value}
+          </p>
+          <p className="text-xs">
+            <span className="font-medium text-[#FF4797]">Puntuación media:</span> {payload[1].value}
+          </p>
+        </div>
+      </div>
+    );
+  }
+  return null;
+};
+
 const TimelineChart = ({ data }: { data: any[] }) => {
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -53,7 +74,7 @@ const TimelineChart = ({ data }: { data: any[] }) => {
         margin={{
           top: 10,
           right: 30,
-          left: 0,
+          left: 10,
           bottom: 10,
         }}
       >
@@ -68,24 +89,19 @@ const TimelineChart = ({ data }: { data: any[] }) => {
           tick={{ fontSize: 12 }} 
           tickLine={false}
           axisLine={false}
+          tickFormatter={(value) => `${value}`}
+          domain={[0, 'dataMax + 2']}
         />
         <YAxis
           yAxisId="right"
           orientation="right"
-          domain={[1, 5]}
+          domain={[0, 5]}
           tick={{ fontSize: 12 }}
           tickLine={false}
           axisLine={false}
+          tickFormatter={(value) => `${value}`}
         />
-        <Tooltip 
-          contentStyle={{ 
-            backgroundColor: 'white', 
-            borderRadius: '8px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-            border: 'none'
-          }}
-          labelStyle={{ fontWeight: 600, color: '#2F2F4C' }}
-        />
+        <Tooltip content={<CustomTooltip />} />
         <Legend verticalAlign="top" height={36} />
         <Line
           yAxisId="left"
@@ -94,8 +110,8 @@ const TimelineChart = ({ data }: { data: any[] }) => {
           name="Número de Reseñas"
           stroke="#02B1C4"
           strokeWidth={2}
-          dot={{ r: 4 }}
-          activeDot={{ r: 6, strokeWidth: 0 }}
+          dot={{ r: 4, strokeWidth: 2, stroke: '#02B1C4', fill: '#fff' }}
+          activeDot={{ r: 6, strokeWidth: 0, fill: '#02B1C4' }}
         />
         <Line
           yAxisId="right"
@@ -104,8 +120,8 @@ const TimelineChart = ({ data }: { data: any[] }) => {
           name="Puntuación Media"
           stroke="#FF4797"
           strokeWidth={2}
-          dot={{ r: 4 }}
-          activeDot={{ r: 6, strokeWidth: 0 }}
+          dot={{ r: 4, strokeWidth: 2, stroke: '#FF4797', fill: '#fff' }}
+          activeDot={{ r: 6, strokeWidth: 0, fill: '#FF4797' }}
         />
       </LineChart>
     </ResponsiveContainer>

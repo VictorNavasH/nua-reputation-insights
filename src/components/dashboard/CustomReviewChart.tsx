@@ -4,11 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AreaChart } from 'lucide-react';
 import { ThirtyDaysChart, ThreeMonthsChart } from './ReviewCharts';
-import { useDashboard } from '@/contexts/DashboardContext';
+import { useReviews } from '@/hooks/useReviews';
 
 // Main component that wraps the chart in a card
 const CustomReviewChart = () => {
-  const { chartData, isLoading } = useDashboard();
+  const { reviewStats, isLoading } = useReviews();
   
   return (
     <Card className="overflow-hidden rounded-2xl border-none shadow-md mb-8">
@@ -35,12 +35,12 @@ const CustomReviewChart = () => {
             <>
               <TabsContent value="30days">
                 <div className="h-[300px] w-full">
-                  <ThirtyDaysChart data={chartData.thirtyDays} />
+                  <ThirtyDaysChart data={reviewStats.thirtyDays} />
                 </div>
               </TabsContent>
               <TabsContent value="3months">
                 <div className="h-[300px] w-full">
-                  <ThreeMonthsChart data={chartData.threeMonths} />
+                  <ThreeMonthsChart data={reviewStats.threeMonths} />
                 </div>
               </TabsContent>
             </>

@@ -16,43 +16,43 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 // Sample data for last 30 days
 const last30DaysData = [
-  { date: '1 Jun', reviews: 1 },
-  { date: '2 Jun', reviews: 2 },
-  { date: '3 Jun', reviews: 0 },
-  { date: '4 Jun', reviews: 3 },
-  { date: '5 Jun', reviews: 2 },
-  { date: '6 Jun', reviews: 1 },
-  { date: '7 Jun', reviews: 4 },
-  { date: '8 Jun', reviews: 2 },
-  { date: '9 Jun', reviews: 1 },
-  { date: '10 Jun', reviews: 3 },
-  { date: '11 Jun', reviews: 0 },
-  { date: '12 Jun', reviews: 2 },
-  { date: '13 Jun', reviews: 1 },
-  { date: '14 Jun', reviews: 1 },
-  { date: '15 Jun', reviews: 2 },
-  { date: '16 Jun', reviews: 3 },
-  { date: '17 Jun', reviews: 0 },
-  { date: '18 Jun', reviews: 1 },
-  { date: '19 Jun', reviews: 2 },
-  { date: '20 Jun', reviews: 0 },
-  { date: '21 Jun', reviews: 1 },
-  { date: '22 Jun', reviews: 3 },
-  { date: '23 Jun', reviews: 2 },
-  { date: '24 Jun', reviews: 1 },
-  { date: '25 Jun', reviews: 0 },
-  { date: '26 Jun', reviews: 2 },
-  { date: '27 Jun', reviews: 1 },
-  { date: '28 Jun', reviews: 3 },
-  { date: '29 Jun', reviews: 2 },
-  { date: '30 Jun', reviews: 1 }
+  { date: '1 Jun', reviews: 1, rating: 4.0 },
+  { date: '2 Jun', reviews: 2, rating: 4.5 },
+  { date: '3 Jun', reviews: 0, rating: 0 },
+  { date: '4 Jun', reviews: 3, rating: 4.3 },
+  { date: '5 Jun', reviews: 2, rating: 4.2 },
+  { date: '6 Jun', reviews: 1, rating: 3.0 },
+  { date: '7 Jun', reviews: 4, rating: 4.8 },
+  { date: '8 Jun', reviews: 2, rating: 4.0 },
+  { date: '9 Jun', reviews: 1, rating: 5.0 },
+  { date: '10 Jun', reviews: 3, rating: 4.7 },
+  { date: '11 Jun', reviews: 0, rating: 0 },
+  { date: '12 Jun', reviews: 2, rating: 4.5 },
+  { date: '13 Jun', reviews: 1, rating: 4.0 },
+  { date: '14 Jun', reviews: 1, rating: 3.0 },
+  { date: '15 Jun', reviews: 2, rating: 4.5 },
+  { date: '16 Jun', reviews: 3, rating: 4.7 },
+  { date: '17 Jun', reviews: 0, rating: 0 },
+  { date: '18 Jun', reviews: 1, rating: 5.0 },
+  { date: '19 Jun', reviews: 2, rating: 4.0 },
+  { date: '20 Jun', reviews: 0, rating: 0 },
+  { date: '21 Jun', reviews: 1, rating: 3.0 },
+  { date: '22 Jun', reviews: 3, rating: 4.7 },
+  { date: '23 Jun', reviews: 2, rating: 4.5 },
+  { date: '24 Jun', reviews: 1, rating: 4.0 },
+  { date: '25 Jun', reviews: 0, rating: 0 },
+  { date: '26 Jun', reviews: 2, rating: 4.0 },
+  { date: '27 Jun', reviews: 1, rating: 5.0 },
+  { date: '28 Jun', reviews: 3, rating: 4.3 },
+  { date: '29 Jun', reviews: 2, rating: 4.5 },
+  { date: '30 Jun', reviews: 1, rating: 4.0 }
 ];
 
 // Sample data for last 3 months
 const last3MonthsData = [
-  { date: 'Abril', reviews: 34 },
-  { date: 'Mayo', reviews: 42 },
-  { date: 'Junio', reviews: 35 }
+  { date: 'Abril', reviews: 34, rating: 4.3 },
+  { date: 'Mayo', reviews: 42, rating: 4.5 },
+  { date: 'Junio', reviews: 35, rating: 4.6 }
 ];
 
 const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>) => {
@@ -63,6 +63,11 @@ const CustomTooltip = ({ active, payload, label }: TooltipProps<number, string>)
         <p className="text-sm font-semibold text-[#02B1C4]">
           {payload[0].value} {payload[0].value === 1 ? 'reseña' : 'reseñas'}
         </p>
+        {payload[0].payload.rating > 0 && (
+          <p className="text-xs mt-1">
+            <span className="font-medium">Puntuación:</span> {payload[0].payload.rating.toFixed(1)}
+          </p>
+        )}
       </div>
     );
   }
@@ -96,6 +101,7 @@ const TimelineChart = ({ data }: { data: any[] }) => {
           axisLine={false}
           domain={[0, 'dataMax + 1']}
           allowDecimals={false}
+          tickFormatter={(value) => `${value}`}
         />
         <Tooltip content={<CustomTooltip />} />
         <defs>

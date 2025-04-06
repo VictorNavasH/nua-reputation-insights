@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { TimeSeriesPoint } from '@/types/dashboard';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface ChartProps {
   data: TimeSeriesPoint[];
@@ -20,7 +21,8 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
         x: 0,
         y: 100 - (data[0].reviews * 10), // Convertir a posición Y (invertida para el SVG)
         value: data[0].reviews,
-        date: data[0].date
+        date: data[0].date,
+        rating: data[0].rating || 0
       });
       
       // Añadir puntos intermedios
@@ -32,7 +34,8 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
             x: (index / (data.length - 1)) * 100,
             y: 100 - (data[index].reviews * 10),
             value: data[index].reviews,
-            date: data[index].date
+            date: data[index].date,
+            rating: data[index].rating || 0
           });
         }
       }
@@ -43,7 +46,8 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
         x: 100,
         y: 100 - (data[lastIndex].reviews * 10),
         value: data[lastIndex].reviews,
-        date: data[lastIndex].date
+        date: data[lastIndex].date,
+        rating: data[lastIndex].rating || 0
       });
     }
     
@@ -127,21 +131,32 @@ export const ThirtyDaysChart: React.FC<ChartProps> = ({ data }) => {
         </defs>
       </svg>
       
-      {/* Data points */}
-      {dataPoints.map((point, i) => (
-        <div
-          key={i}
-          className="absolute h-3 w-3 rounded-full bg-white shadow-md"
-          style={{
-            left: `${point.x}%`,
-            top: `${point.y}%`,
-            transform: 'translate(-50%, -50%)',
-            border: '2px solid',
-            borderImage: 'linear-gradient(to right, #02B1C4, #FF4797) 1',
-          }}
-          title={`${point.date}: ${point.value} reseñas`}
-        />
-      ))}
+      {/* Data points with tooltips */}
+      <TooltipProvider>
+        {dataPoints.map((point, i) => (
+          <Tooltip key={i}>
+            <TooltipTrigger asChild>
+              <div
+                className="absolute h-3 w-3 rounded-full bg-white shadow-md cursor-pointer"
+                style={{
+                  left: `${point.x}%`,
+                  top: `${point.y}%`,
+                  transform: 'translate(-50%, -50%)',
+                  border: '2px solid',
+                  borderImage: 'linear-gradient(to right, #02B1C4, #FF4797) 1',
+                }}
+              />
+            </TooltipTrigger>
+            <TooltipContent className="bg-white p-2 rounded-md shadow-lg border border-gray-200 text-sm">
+              <div className="font-medium">{point.date}</div>
+              <div className="text-[#02B1C4]">{point.value} {point.value === 1 ? 'reseña' : 'reseñas'}</div>
+              {point.rating > 0 && (
+                <div className="text-[#FF4797]">Puntuación: {point.rating.toFixed(1)}</div>
+              )}
+            </TooltipContent>
+          </Tooltip>
+        ))}
+      </TooltipProvider>
     </div>
   );
 };
@@ -154,7 +169,8 @@ export const ThreeMonthsChart: React.FC<ChartProps> = ({ data }) => {
       x: (index / (data.length - 1)) * 100,
       y: 100 - (item.reviews / 2), // Escala diferente para datos mensuales
       value: item.reviews,
-      date: item.date
+      date: item.date,
+      rating: item.rating || 0
     }));
   }, [data]);
   
@@ -182,6 +198,7 @@ export const ThreeMonthsChart: React.FC<ChartProps> = ({ data }) => {
       
       {/* Y-axis labels */}
       <div className="absolute -left-8 top-0 flex h-full flex-col justify-between py-2 text-xs text-[#2F2F4C]/70">
+        <div>50</div>
         <div>40</div>
         <div>30</div>
         <div>20</div>
@@ -227,21 +244,32 @@ export const ThreeMonthsChart: React.FC<ChartProps> = ({ data }) => {
         </defs>
       </svg>
       
-      {/* Data points */}
-      {dataPoints.map((point, i) => (
-        <div
-          key={i}
-          className="absolute h-3 w-3 rounded-full bg-white shadow-md"
-          style={{
-            left: `${point.x}%`,
-            top: `${point.y}%`,
-            transform: 'translate(-50%, -50%)',
-            border: '2px solid',
-            borderImage: 'linear-gradient(to right, #02B1C4, #FF4797) 1',
-          }}
-          title={`${point.date}: ${point.value} reseñas`}
-        />
-      ))}
+      {/* Data points with tooltips */}
+      <TooltipProvider>
+        {dataPoints.map((point, i) => (
+          <Tooltip key={i}>
+            <TooltipTrigger asChild>
+              <div
+                className="absolute h-3 w-3 rounded-full bg-white shadow-md cursor-pointer"
+                style={{
+                  left: `${point.x}%`,
+                  top: `${point.y}%`,
+                  transform: 'translate(-50%, -50%)',
+                  border: '2px solid',
+                  borderImage: 'linear-gradient(to right, #02B1C4, #FF4797) 1',
+                }}
+              />
+            </TooltipTrigger>
+            <TooltipContent className="bg-white p-2 rounded-md shadow-lg border border-gray-200 text-sm">
+              <div className="font-medium">{point.date}</div>
+              <div className="text-[#02B1C4]">{point.value} reseñas</div>
+              {point.rating > 0 && (
+                <div className="text-[#FF4797]">Puntuación media: {point.rating.toFixed(1)}</div>
+              )}
+            </TooltipContent>
+          </Tooltip>
+        ))}
+      </TooltipProvider>
     </div>
   );
 };
