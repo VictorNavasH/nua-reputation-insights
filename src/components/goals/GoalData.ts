@@ -27,7 +27,7 @@ export const defaultGoals = [{
   unit: 'reseñas',
   iconName: 'MessageSquare',
   month: 'junio',
-  year: 2023
+  year: currentYear
 }, {
   id: 2,
   title: 'Sentimiento positivo',
@@ -37,7 +37,7 @@ export const defaultGoals = [{
   unit: '%',
   iconName: 'ThumbsUp',
   month: 'junio',
-  year: 2023
+  year: currentYear
 }, {
   id: 3,
   title: 'Puntuación media',
@@ -47,7 +47,7 @@ export const defaultGoals = [{
   unit: 'estrellas',
   iconName: 'Star',
   month: 'junio',
-  year: 2023
+  year: currentYear
 }, {
   id: 4,
   title: 'Tiempo de respuesta',
@@ -57,7 +57,7 @@ export const defaultGoals = [{
   unit: 'horas',
   iconName: 'Clock',
   month: 'junio',
-  year: 2023,
+  year: currentYear,
   inverted: true // Lower is better for this goal
 }, {
   id: 5,
@@ -68,9 +68,20 @@ export const defaultGoals = [{
   unit: 'reseñas',
   iconName: 'MessageSquare',
   month: 'julio',
-  year: 2023
+  year: currentYear
 }, {
   id: 6,
+  title: 'Tiempo de respuesta',
+  description: 'Tiempo medio para responder a las reseñas',
+  current: 6,
+  target: 5,
+  unit: 'horas',
+  iconName: 'Clock',
+  month: 'julio',
+  year: currentYear,
+  inverted: true
+}, {
+  id: 7,
   title: 'Puntuación media',
   description: 'Calificación media de las reseñas',
   current: 4.7,

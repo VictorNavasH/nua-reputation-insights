@@ -26,9 +26,9 @@ const GoalCard = ({ goal, onEdit, onDuplicate }: GoalCardProps) => {
   const calculateProgress = (current: number, target: number, inverted = false) => {
     if (inverted) {
       // For inverted metrics (where lower is better)
-      return Math.max(0, Math.min(100, target / current * 100));
+      return target <= 0 ? 0 : Math.max(0, Math.min(100, (target / Math.max(current, 0.1)) * 100));
     }
-    return Math.max(0, Math.min(100, current / target * 100));
+    return target <= 0 ? 0 : Math.max(0, Math.min(100, (current / target) * 100));
   };
 
   const getProgressColor = (percentage: number) => {

@@ -1,9 +1,10 @@
 
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Settings } from 'lucide-react';
+import { Settings, Clock } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
+import { useNavigate } from 'react-router-dom';
 
 interface GoalCardProps {
   title: string;
@@ -13,9 +14,10 @@ interface GoalCardProps {
   unit: string;
   percentage: number;
   color: string;
+  inverted?: boolean;
 }
 
-const GoalCard = ({ title, description, current, target, unit, percentage, color }: GoalCardProps) => {
+const GoalCard = ({ title, description, current, target, unit, percentage, color, inverted }: GoalCardProps) => {
   return (
     <Card className="bg-white shadow-sm">
       <CardHeader className="p-4 pb-0">
@@ -44,6 +46,9 @@ const GoalCard = ({ title, description, current, target, unit, percentage, color
         </div>
         <div className="mt-3 text-xs font-medium" style={{ color }}>
           {percentage}% completado
+          {inverted && current > target && " (Objetivo no alcanzado)"}
+          {inverted && current <= target && " (Objetivo alcanzado)"}
+          {!inverted && current >= target && " (Objetivo alcanzado)"}
         </div>
       </CardContent>
     </Card>
@@ -51,11 +56,22 @@ const GoalCard = ({ title, description, current, target, unit, percentage, color
 };
 
 const GoalsProgress = () => {
+  const navigate = useNavigate();
+  
+  const handleNavigateToGoals = () => {
+    navigate('/goals');
+  };
+
   return (
     <div className="mt-6">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-nua-navy">Objetivos y Progreso</h2>
-        <Button variant="ghost" size="sm" className="flex items-center space-x-1">
+        <Button 
+          variant="ghost" 
+          size="sm" 
+          className="flex items-center space-x-1"
+          onClick={handleNavigateToGoals}
+        >
           <Settings size={16} />
           <span className="ml-1 text-xs">Configurar objetivos</span>
         </Button>
@@ -93,13 +109,14 @@ const GoalsProgress = () => {
         />
         
         <GoalCard
-          title="Sentimiento Positivo"
-          description="Mantener más del 80% de sentimiento positivo"
-          current={78}
-          target={80}
-          unit="%"
-          percentage={97}
+          title="Tiempo de Respuesta"
+          description="Mantener tiempo de respuesta bajo 5 horas"
+          current={8}
+          target={5}
+          unit="horas"
+          percentage={62}
           color="#17C3B2"
+          inverted={true}
         />
       </div>
     </div>
