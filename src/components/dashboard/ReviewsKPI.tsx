@@ -47,7 +47,9 @@ const ReviewsKPI = () => {
               </div>
               <div>
                 <p className="text-sm text-[#2F2F4C]/70">Calificación</p>
-                <p className="text-2xl font-bold text-[#2F2F4C]">{kpiData.averageRating} ⭐</p>
+                <div className="flex items-center">
+                  <p className="text-2xl font-bold text-[#2F2F4C]">{kpiData.averageRating} ⭐</p>
+                </div>
               </div>
             </div>
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[#E8EDF3] cursor-pointer hover:bg-[#E0E5EB] transition-colors">
