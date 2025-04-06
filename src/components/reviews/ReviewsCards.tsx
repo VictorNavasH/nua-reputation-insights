@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh, Languages } from 'lucide-react';
+import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh, Languages, Translate } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -118,7 +118,7 @@ const ReviewsCards = ({ reviews, onOpenResponseDialog }: ReviewsCardsProps) => {
                       className="gap-2"
                       onClick={() => toggleTranslation(review.id)}
                     >
-                      <Languages size={14} />
+                      <Translate size={14} />
                       {translatedReviews.includes(review.id) ? "Ver original" : "Traducir"}
                     </Button>
                   )}

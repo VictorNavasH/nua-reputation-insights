@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh, Languages } from 'lucide-react';
+import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh, Translate } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card } from '@/components/ui/card';
@@ -127,7 +127,7 @@ const ReviewsTable = ({ reviews, onOpenResponseDialog }: ReviewsTableProps) => {
                         className="gap-2"
                         onClick={() => toggleTranslation(review.id)}
                       >
-                        <Languages size={14} />
+                        <Translate size={14} />
                         {translatedReviews.includes(review.id) ? "Ver original" : "Traducir"}
                       </Button>
                     )}
