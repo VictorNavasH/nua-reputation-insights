@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
@@ -7,66 +7,96 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Star, Search, Calendar, Download, MessageCircle, ThumbsUp, ThumbsDown, Meh } from 'lucide-react';
+import { Star, Search, Calendar, Download, MessageCircle, ThumbsUp, ThumbsDown, Meh, Loader2 } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import ReviewResponseDialog from '@/components/reviews/ReviewResponseDialog';
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from 'sonner';
 
-// Mock data for reviews
-const mockReviews = [
-  {
-    id: 1,
-    customer: 'Ana García',
-    date: '24 Jun 2023',
-    rating: 5,
-    review: 'Excelente experiencia, el personal muy atento y las instalaciones perfectas. Volveré sin duda.',
-    sentiment: 'positive',
-    responded: true,
-  },
-  {
-    id: 2,
-    customer: 'Carlos Martínez',
-    date: '20 Jun 2023',
-    rating: 4,
-    review: 'Muy buena atención, pero tuve que esperar más de lo esperado para ser atendido.',
-    sentiment: 'neutral',
-    responded: false,
-  },
-  {
-    id: 3,
-    customer: 'Elena Ruiz',
-    date: '15 Jun 2023',
-    rating: 2,
-    review: 'No me gustó la atención, esperaba más profesionalidad. El local estaba limpio pero la experiencia fue mala.',
-    sentiment: 'negative',
-    responded: false,
-  },
-  {
-    id: 4,
-    customer: 'Miguel Sánchez',
-    date: '10 Jun 2023',
-    rating: 5,
-    review: 'Fantástico servicio, instalaciones modernas y personal muy cualificado. Recomendable al 100%.',
-    sentiment: 'positive',
-    responded: true,
-  },
-  {
-    id: 5,
-    customer: 'Laura Pérez',
-    date: '5 Jun 2023',
-    rating: 3,
-    review: 'Servicio correcto, pero esperaba más por el precio pagado. Las instalaciones están bien.',
-    sentiment: 'neutral',
-    responded: false,
-  }
-];
+// Interfaz para los datos de reseñas
+interface Review {
+  id: number;
+  UUID: string;
+  customer: string;
+  date: string;
+  rating: number;
+  review: string;
+  sentiment: 'positive' | 'neutral' | 'negative';
+  responded: boolean;
+  profile_url?: string;
+  photo?: string;
+}
 
 const Reviews = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [ratingFilter, setRatingFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedReview, setSelectedReview] = useState<null | any>(null);
-  const [reviews, setReviews] = useState(mockReviews);
+  const [selectedReview, setSelectedReview] = useState<null | Review>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Cargar reseñas desde Supabase
+  useEffect(() => {
+    const fetchReviews = async () => {
+      try {
+        setIsLoading(true);
+        
+        const { data, error } = await supabase
+          .from('reseñas_actuales')
+          .select('*')
+          .order('fecha', { ascending: false });
+        
+        if (error) {
+          throw error;
+        }
+        
+        // Transformar los datos para que coincidan con la interfaz Review
+        const formattedReviews = data.map((item, index) => ({
+          id: index + 1,
+          UUID: item.UUID || '',
+          customer: item.nombre || 'Cliente anónimo',
+          date: formatDate(item.fecha),
+          rating: item.puntuacion || 0,
+          review: item.reseña || '',
+          sentiment: determineSentiment(item.puntuacion || 0),
+          responded: false, // Podríamos tener una columna para esto en el futuro
+          profile_url: item.url_perfil || '',
+          photo: item.foto_autor || '',
+        }));
+        
+        setReviews(formattedReviews);
+      } catch (err) {
+        console.error('Error al cargar reseñas:', err);
+        setError('No se pudieron cargar las reseñas. Por favor, inténtelo de nuevo.');
+        toast.error('Error al cargar reseñas');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    
+    fetchReviews();
+  }, []);
+
+  // Función para formatear fechas
+  const formatDate = (dateString: string | null): string => {
+    if (!dateString) return 'Fecha desconocida';
+    
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('es-ES', { day: '2-digit', month: 'short', year: 'numeric' });
+    } catch (error) {
+      return dateString;
+    }
+  };
+
+  // Función para determinar el sentimiento basado en la puntuación
+  const determineSentiment = (rating: number): 'positive' | 'neutral' | 'negative' => {
+    if (rating >= 4) return 'positive';
+    if (rating >= 3) return 'neutral';
+    return 'negative';
+  };
 
   // Filter reviews based on search query and filters
   const filteredReviews = reviews.filter(review => {
@@ -85,13 +115,14 @@ const Reviews = () => {
   });
 
   // Function to handle opening the response dialog
-  const handleOpenResponseDialog = (review: any) => {
+  const handleOpenResponseDialog = (review: Review) => {
     setSelectedReview(review);
     setIsDialogOpen(true);
   };
 
   // Function to handle responding to a review
   const handleRespond = (id: number, response: string) => {
+    // En el futuro, aquí podríamos guardar la respuesta en Supabase
     setReviews(reviews.map(review => 
       review.id === id ? { ...review, responded: true } : review
     ));
@@ -193,92 +224,150 @@ const Reviews = () => {
             </CardContent>
           </Card>
           
+          {/* Estado de carga o error */}
+          {isLoading && (
+            <div className="flex justify-center items-center p-12">
+              <Loader2 className="h-8 w-8 animate-spin text-[#02B1C4]" />
+              <span className="ml-3 text-[#2F2F4C]">Cargando reseñas...</span>
+            </div>
+          )}
+          
+          {error && (
+            <Card className="mb-6">
+              <CardContent className="p-6 text-center text-red-500">
+                {error}
+                <Button 
+                  className="mt-4" 
+                  onClick={() => window.location.reload()}
+                >
+                  Reintentar
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+          
           {/* Reviews display */}
-          <Tabs defaultValue="table">
-            <TabsList className="hidden">
-              <TabsTrigger value="table">Vista tabla</TabsTrigger>
-              <TabsTrigger value="cards">Vista tarjetas</TabsTrigger>
-            </TabsList>
-            
-            <TabsContent value="table">
-              <Card>
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Cliente</TableHead>
-                      <TableHead>Fecha</TableHead>
-                      <TableHead>Puntuación</TableHead>
-                      <TableHead>Reseña</TableHead>
-                      <TableHead>Sentimiento</TableHead>
-                      <TableHead>Acciones</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredReviews.map((review) => (
-                      <TableRow key={review.id}>
-                        <TableCell className="font-medium">{review.customer}</TableCell>
-                        <TableCell>{review.date}</TableCell>
-                        <TableCell>
-                          <div className="flex">{renderStars(review.rating)}</div>
-                        </TableCell>
-                        <TableCell className="max-w-xs">
-                          <p className="truncate">{review.review}</p>
-                        </TableCell>
-                        <TableCell>{renderSentiment(review.sentiment)}</TableCell>
-                        <TableCell>
-                          <Button 
-                            variant={review.responded ? "outline" : "default"} 
-                            size="sm"
-                            className="gap-2"
-                            onClick={() => handleOpenResponseDialog(review)}
-                          >
-                            <MessageCircle size={14} />
-                            {review.responded ? "Respondida" : "Responder"}
-                          </Button>
-                        </TableCell>
+          {!isLoading && !error && (
+            <Tabs defaultValue="table">
+              <TabsList className="hidden">
+                <TabsTrigger value="table">Vista tabla</TabsTrigger>
+                <TabsTrigger value="cards">Vista tarjetas</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="table">
+                <Card>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Cliente</TableHead>
+                        <TableHead>Fecha</TableHead>
+                        <TableHead>Puntuación</TableHead>
+                        <TableHead>Reseña</TableHead>
+                        <TableHead>Sentimiento</TableHead>
+                        <TableHead>Acciones</TableHead>
                       </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </Card>
-            </TabsContent>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredReviews.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                            No se encontraron reseñas que coincidan con los filtros aplicados
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        filteredReviews.map((review) => (
+                          <TableRow key={review.id}>
+                            <TableCell className="font-medium">
+                              <div className="flex items-center">
+                                {review.photo && (
+                                  <img 
+                                    src={review.photo} 
+                                    alt={review.customer} 
+                                    className="w-8 h-8 rounded-full mr-2 object-cover"
+                                  />
+                                )}
+                                {review.customer}
+                              </div>
+                            </TableCell>
+                            <TableCell>{review.date}</TableCell>
+                            <TableCell>
+                              <div className="flex">{renderStars(review.rating)}</div>
+                            </TableCell>
+                            <TableCell className="max-w-xs">
+                              <p className="truncate">{review.review}</p>
+                            </TableCell>
+                            <TableCell>{renderSentiment(review.sentiment)}</TableCell>
+                            <TableCell>
+                              <Button 
+                                variant={review.responded ? "outline" : "default"} 
+                                size="sm"
+                                className="gap-2"
+                                onClick={() => handleOpenResponseDialog(review)}
+                              >
+                                <MessageCircle size={14} />
+                                {review.responded ? "Respondida" : "Responder"}
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
+                  </Table>
+                </Card>
+              </TabsContent>
 
-            <TabsContent value="cards">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {filteredReviews.map((review) => (
-                  <Card key={review.id} className="overflow-hidden">
-                    <CardContent className="p-4">
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <h3 className="font-medium text-[#2F2F4C]">{review.customer}</h3>
-                          <p className="text-sm text-gray-500">{review.date}</p>
-                        </div>
-                        <div className="flex space-x-1">{renderStars(review.rating)}</div>
-                      </div>
-                      
-                      <p className="text-sm mb-4">{review.review}</p>
-                      
-                      <div className="flex justify-between items-center">
-                        <div className="flex items-center">
-                          <span className="mr-2">Sentimiento:</span>
-                          {renderSentiment(review.sentiment)}
-                        </div>
-                        <Button 
-                          variant={review.responded ? "outline" : "default"} 
-                          size="sm"
-                          className="gap-2"
-                          onClick={() => handleOpenResponseDialog(review)}
-                        >
-                          <MessageCircle size={14} />
-                          {review.responded ? "Respondida" : "Responder"}
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            </TabsContent>
-          </Tabs>
+              <TabsContent value="cards">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredReviews.length === 0 ? (
+                    <div className="col-span-full text-center py-8 text-muted-foreground">
+                      No se encontraron reseñas que coincidan con los filtros aplicados
+                    </div>
+                  ) : (
+                    filteredReviews.map((review) => (
+                      <Card key={review.id} className="overflow-hidden">
+                        <CardContent className="p-4">
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <div className="flex items-center">
+                                {review.photo && (
+                                  <img 
+                                    src={review.photo} 
+                                    alt={review.customer} 
+                                    className="w-8 h-8 rounded-full mr-2 object-cover"
+                                  />
+                                )}
+                                <h3 className="font-medium text-[#2F2F4C]">{review.customer}</h3>
+                              </div>
+                              <p className="text-sm text-gray-500">{review.date}</p>
+                            </div>
+                            <div className="flex space-x-1">{renderStars(review.rating)}</div>
+                          </div>
+                          
+                          <p className="text-sm mb-4">{review.review}</p>
+                          
+                          <div className="flex justify-between items-center">
+                            <div className="flex items-center">
+                              <span className="mr-2">Sentimiento:</span>
+                              {renderSentiment(review.sentiment)}
+                            </div>
+                            <Button 
+                              variant={review.responded ? "outline" : "default"} 
+                              size="sm"
+                              className="gap-2"
+                              onClick={() => handleOpenResponseDialog(review)}
+                            >
+                              <MessageCircle size={14} />
+                              {review.responded ? "Respondida" : "Responder"}
+                            </Button>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))
+                  )}
+                </div>
+              </TabsContent>
+            </Tabs>
+          )}
 
           {/* Response Dialog */}
           <ReviewResponseDialog 
