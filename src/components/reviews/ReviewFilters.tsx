@@ -1,9 +1,10 @@
 
 import React from 'react';
-import { Search, Calendar, Star } from 'lucide-react';
+import { Search, Calendar, Star, LayoutGrid, Table as TableIcon } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 
 interface ReviewFiltersProps {
   searchQuery: string;
@@ -12,6 +13,8 @@ interface ReviewFiltersProps {
   setDateFilter: (filter: string) => void;
   ratingFilter: string;
   setRatingFilter: (filter: string) => void;
+  viewType: 'table' | 'cards';
+  setViewType: (type: 'table' | 'cards') => void;
 }
 
 const ReviewFilters = ({
@@ -20,7 +23,9 @@ const ReviewFilters = ({
   dateFilter,
   setDateFilter,
   ratingFilter,
-  setRatingFilter
+  setRatingFilter,
+  viewType,
+  setViewType
 }: ReviewFiltersProps) => {
   return (
     <Card className="mb-6">
@@ -46,8 +51,9 @@ const ReviewFilters = ({
             <SelectContent>
               <SelectItem value="all">Todas las fechas</SelectItem>
               <SelectItem value="today">Hoy</SelectItem>
-              <SelectItem value="week">Esta semana</SelectItem>
+              <SelectItem value="week">Últimos 7 días</SelectItem>
               <SelectItem value="month">Este mes</SelectItem>
+              <SelectItem value="quarter">Últimos 3 meses</SelectItem>
             </SelectContent>
           </Select>
           
@@ -70,8 +76,24 @@ const ReviewFilters = ({
           {/* View type toggle */}
           <div className="w-full">
             <div className="w-full bg-muted p-1 rounded-md h-10 flex items-center justify-center">
-              <div className="flex-1 text-center">Vista tabla</div>
-              <div className="flex-1 text-center">Vista tarjetas</div>
+              <Button 
+                variant={viewType === 'table' ? "default" : "ghost"}
+                size="sm"
+                className="w-1/2 h-8 rounded-sm flex items-center justify-center gap-1"
+                onClick={() => setViewType('table')}
+              >
+                <TableIcon size={14} />
+                <span>Tabla</span>
+              </Button>
+              <Button 
+                variant={viewType === 'cards' ? "default" : "ghost"}
+                size="sm"
+                className="w-1/2 h-8 rounded-sm flex items-center justify-center gap-1"
+                onClick={() => setViewType('cards')}
+              >
+                <LayoutGrid size={14} />
+                <span>Tarjetas</span>
+              </Button>
             </div>
           </div>
         </div>

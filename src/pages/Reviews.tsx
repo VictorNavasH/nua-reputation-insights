@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
@@ -16,6 +16,7 @@ const Reviews = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [ratingFilter, setRatingFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
+  const [viewType, setViewType] = useState<'table' | 'cards'>('table');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedReview, setSelectedReview] = useState<null | Review>(null);
   
@@ -34,9 +35,47 @@ const Reviews = () => {
       ratingFilter === 'all' || 
       review.rating === parseInt(ratingFilter);
     
-    // For this example, we'll just apply the search and rating filters
-    return matchesSearch && matchesRating;
+    // Filter by date
+    let matchesDate = true;
+    if (dateFilter !== 'all') {
+      const reviewDate = new Date(review.date.split(' ').slice(-1)[0] + '-' + 
+                                 getMonthNumber(review.date.split(' ')[1]) + '-' + 
+                                 review.date.split(' ')[0]);
+      const today = new Date();
+      
+      switch(dateFilter) {
+        case 'today':
+          matchesDate = reviewDate.toDateString() === today.toDateString();
+          break;
+        case 'week':
+          const weekAgo = new Date();
+          weekAgo.setDate(today.getDate() - 7);
+          matchesDate = reviewDate >= weekAgo;
+          break;
+        case 'month':
+          matchesDate = reviewDate.getMonth() === today.getMonth() && 
+                       reviewDate.getFullYear() === today.getFullYear();
+          break;
+        case 'quarter':
+          const threeMonthsAgo = new Date();
+          threeMonthsAgo.setMonth(today.getMonth() - 3);
+          matchesDate = reviewDate >= threeMonthsAgo;
+          break;
+      }
+    }
+    
+    return matchesSearch && matchesRating && matchesDate;
   });
+
+  // Helper function to convert Spanish month abbreviation to number
+  function getMonthNumber(monthAbbr: string): string {
+    const monthMap: {[key: string]: string} = {
+      'ene': '01', 'feb': '02', 'mar': '03', 'abr': '04',
+      'may': '05', 'jun': '06', 'jul': '07', 'ago': '08',
+      'sep': '09', 'oct': '10', 'nov': '11', 'dic': '12'
+    };
+    return monthMap[monthAbbr.toLowerCase()] || '01';
+  }
 
   // Function to handle opening the response dialog
   const handleOpenResponseDialog = (review: Review) => {
@@ -52,6 +91,11 @@ const Reviews = () => {
     );
     // This would be updated to use a state update function from the hook
   };
+
+  // Update the view type based on tab selection
+  useEffect(() => {
+    setViewType(type => type);
+  }, []);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#E8EDF3]">
@@ -75,6 +119,8 @@ const Reviews = () => {
             setDateFilter={setDateFilter}
             ratingFilter={ratingFilter}
             setRatingFilter={setRatingFilter}
+            viewType={viewType}
+            setViewType={setViewType}
           />
           
           {/* Loading state */}
@@ -102,26 +148,17 @@ const Reviews = () => {
           
           {/* Reviews display */}
           {!isLoading && !error && (
-            <Tabs defaultValue="table">
-              <TabsList className="hidden">
-                <TabsTrigger value="table">Vista tabla</TabsTrigger>
-                <TabsTrigger value="cards">Vista tarjetas</TabsTrigger>
-              </TabsList>
-              
-              <TabsContent value="table">
-                <ReviewsTable 
-                  reviews={filteredReviews} 
-                  onOpenResponseDialog={handleOpenResponseDialog} 
-                />
-              </TabsContent>
-
-              <TabsContent value="cards">
-                <ReviewsCards 
-                  reviews={filteredReviews} 
-                  onOpenResponseDialog={handleOpenResponseDialog} 
-                />
-              </TabsContent>
-            </Tabs>
+            viewType === 'table' ? (
+              <ReviewsTable 
+                reviews={filteredReviews} 
+                onOpenResponseDialog={handleOpenResponseDialog} 
+              />
+            ) : (
+              <ReviewsCards 
+                reviews={filteredReviews} 
+                onOpenResponseDialog={handleOpenResponseDialog} 
+              />
+            )
           )}
 
           {/* Response Dialog */}
