@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend, AreaChart, Area, PieChart, Pie, Cell } from 'recharts';
 import { useReviews } from '@/hooks/useReviews';
 import { Loader2 } from 'lucide-react';
+
 const wordMentionsData = [{
   word: 'Servicio',
   count: 42
@@ -31,6 +32,7 @@ const wordMentionsData = [{
   word: 'Experiencia',
   count: 18
 }];
+
 const sentimentTrendData = [{
   date: '01/06',
   positive: 70,
@@ -67,27 +69,13 @@ const sentimentTrendData = [{
   negative: 8,
   neutral: 10
 }];
-const sentimentComparisonData = [{
-  name: 'Google',
-  positive: 78,
-  negative: 12,
-  neutral: 10
-}, {
-  name: 'Facebook',
-  positive: 72,
-  negative: 18,
-  neutral: 10
-}, {
-  name: 'Tripadvisor',
-  positive: 68,
-  negative: 22,
-  neutral: 10
-}, {
-  name: 'Web',
-  positive: 82,
-  negative: 8,
-  neutral: 10
-}];
+
+const sourceDistributionData = [
+  { name: 'Google', percentage: 65 },
+  { name: 'Tripadvisor', percentage: 25 },
+  { name: 'Internas', percentage: 10 }
+];
+
 const WordCloud = () => {
   const wordTags = [{
     text: 'Servicio',
@@ -152,6 +140,7 @@ const WordCloud = () => {
     })}
     </div>;
 };
+
 const Analysis = () => {
   const [timeframe, setTimeframe] = useState('month');
   const {
@@ -159,6 +148,7 @@ const Analysis = () => {
     isLoading,
     error
   } = useReviews();
+
   const generateRatingDistribution = () => {
     if (!reviews.length) return [];
     const ratingCounts = {
@@ -180,8 +170,10 @@ const Analysis = () => {
       ratingValue: parseInt(rating)
     })).sort((a, b) => b.ratingValue - a.ratingValue);
   };
+
   const ratingDistributionData = generateRatingDistribution();
   const RATING_COLORS = ['#00C49F', '#82ca9d', '#FFBB28', '#edadff', '#edadff'];
+
   const calculatePercentages = () => {
     if (!ratingDistributionData.length) return [];
     const total = ratingDistributionData.reduce((sum, item) => sum + item.count, 0);
@@ -190,7 +182,40 @@ const Analysis = () => {
       percentage: total > 0 ? Math.round(item.count / total * 100) : 0
     }));
   };
+
   const ratingPercentages = calculatePercentages();
+
+  const calculateSourceDistribution = useMemo(() => {
+    if (!reviews.length) return sourceDistributionData;
+
+    const sourceCount = reviews.reduce((acc, review) => {
+      let source = 'Internas';
+      if (review.profile_url) {
+        if (review.profile_url.includes('google')) {
+          source = 'Google';
+        } else if (review.profile_url.includes('tripadvisor')) {
+          source = 'Tripadvisor';
+        }
+      }
+      
+      acc[source] = (acc[source] || 0) + 1;
+      return acc;
+    }, {});
+
+    const total = Object.values(sourceCount).reduce((sum: number, count: number) => sum + count, 0);
+    
+    const result = Object.entries(sourceCount).map(([name, count]) => ({
+      name,
+      percentage: total > 0 ? Math.round((count as number) / total * 100) : 0
+    }));
+
+    return result.length ? result : sourceDistributionData;
+  }, [reviews]);
+
+  const sourceDistribution = calculateSourceDistribution;
+
+  const SOURCE_COLORS = ['#4285F4', '#DB4437', '#0F9D58'];
+
   if (isLoading) {
     return <div className="min-h-screen flex flex-col bg-[#E8EDF3]">
         <Header />
@@ -203,6 +228,7 @@ const Analysis = () => {
         <Footer />
       </div>;
   }
+
   return <div className="min-h-screen flex flex-col bg-[#E8EDF3]">
       <Header />
       
@@ -320,25 +346,32 @@ const Analysis = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <Card className="overflow-hidden">
               <CardHeader className="bg-gradient-to-r from-[#ffce85] to-[#02f2d2] pb-2">
-                <CardTitle className="text-lg font-medium text-white">Comparativa de sentimiento por fuente</CardTitle>
+                <CardTitle className="text-lg font-medium text-white">Distribución por origen</CardTitle>
               </CardHeader>
               <CardContent className="pt-4">
                 <ResponsiveContainer width="100%" height={300}>
-                  <BarChart data={sentimentComparisonData} margin={{
-                  top: 20,
-                  right: 30,
-                  left: 20,
-                  bottom: 5
-                }}>
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
+                  <PieChart>
+                    <Pie 
+                      data={sourceDistribution} 
+                      cx="50%" 
+                      cy="50%" 
+                      labelLine={true} 
+                      outerRadius={80} 
+                      fill="#8884d8" 
+                      dataKey="percentage" 
+                      nameKey="name" 
+                      label={({name, percentage}) => `${name} (${percentage}%)`}
+                    >
+                      {sourceDistribution.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={SOURCE_COLORS[index % SOURCE_COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value) => [`${value}%`, 'Porcentaje']}
+                      labelFormatter={(label) => `Origen: ${label}`}
+                    />
                     <Legend />
-                    <Bar dataKey="positive" name="Positivas" stackId="a" fill="#02F2D2" />
-                    <Bar dataKey="neutral" name="Neutras" stackId="a" fill="#FFCB77" />
-                    <Bar dataKey="negative" name="Negativas" stackId="a" fill="#FE6D73" />
-                  </BarChart>
+                  </PieChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
@@ -358,4 +391,5 @@ const Analysis = () => {
       <Footer />
     </div>;
 };
+
 export default Analysis;
