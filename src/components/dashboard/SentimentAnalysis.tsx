@@ -29,7 +29,7 @@ const SentimentAnalysis = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-[280px] mt-4"> {/* Increased height to provide more space */}
+          <div className="h-[320px] mt-4"> {/* Increased height even more to prevent text cutoff */}
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -37,8 +37,8 @@ const SentimentAnalysis = () => {
                   cx="50%"
                   cy="50%"
                   labelLine={true}
-                  outerRadius={({ index }) => (activeIndex === index ? 90 : 80)} /* Expand on hover */
-                  innerRadius={({ index }) => (activeIndex === index ? 5 : 0)} /* Small inner radius on hover */
+                  outerRadius={activeIndex !== null ? (index => (activeIndex === index ? 90 : 80)) : 80}
+                  innerRadius={activeIndex !== null ? (index => (activeIndex === index ? 5 : 0)) : 0}
                   paddingAngle={2}
                   fill="#8884d8"
                   dataKey="value"
