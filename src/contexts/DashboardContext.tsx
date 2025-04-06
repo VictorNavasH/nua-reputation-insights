@@ -15,14 +15,14 @@ import {
 const initialKpiData: KpiData = {
   averageRating: 4.6,
   totalReviews: 32,
-  monthlyReviews: 30,
   positivePercentage: 78,
+  monthlyReviews: 30,
   monthlyTarget: 50,
   comparedToPrevious: {
     averageRating: { value: 0.2, trend: 'up' },
     totalReviews: { value: 12, trend: 'up' },
-    monthlyReviews: { value: 5, trend: 'down' },
     positivePercentage: { value: 3, trend: 'up' },
+    monthlyReviews: { value: 5, trend: 'down' }
   }
 };
 
@@ -49,7 +49,8 @@ const initialChartData: ReviewChartData = {
     { date: 'Abril', reviews: 34, rating: 4.3 },
     { date: 'Mayo', reviews: 42, rating: 4.5 },
     { date: 'Junio', reviews: 35, rating: 4.6 }
-  ]
+  ],
+  year: [] // Added to match the interface
 };
 
 // Interfaz para el contexto
@@ -89,7 +90,7 @@ export const DashboardProvider = ({ children }: DashboardProviderProps) => {
   const [chartData, setChartData] = useState<ReviewChartData>(initialChartData);
   const [featuredReviews, setFeaturedReviews] = useState<ReviewData[]>([
     {
-      id: '1',
+      id: 1,
       author: 'María García',
       date: '23 Jun 2023',
       text: 'La atención fue excelente y la comida deliciosa. La tecnología de autoservicio es una maravilla, ¡nunca había visto algo así en un restaurante!',
@@ -100,7 +101,7 @@ export const DashboardProvider = ({ children }: DashboardProviderProps) => {
       emoji: '🤩'
     },
     {
-      id: '2',
+      id: 2,
       author: 'Carlos Pérez',
       date: '18 Jun 2023',
       text: 'La fusión de sabores es increíble. El ambiente es muy moderno y agradable. Definitivamente volveré con amigos.',
@@ -111,7 +112,7 @@ export const DashboardProvider = ({ children }: DashboardProviderProps) => {
       emoji: '😊'
     },
     {
-      id: '3',
+      id: 3,
       author: 'Laura Sánchez',
       date: '15 Jun 2023',
       text: 'Me encantó el concepto del restaurante. La comida está bien, pero el servicio podría mejorar un poco. Aún así, recomendable.',
@@ -133,7 +134,9 @@ export const DashboardProvider = ({ children }: DashboardProviderProps) => {
       unit: 'reseñas',
       period: 'monthly',
       category: 'reviews',
-      color: '#02B1C4'
+      color: '#02B1C4',
+      startDate: '',
+      dueDate: ''
     },
     {
       id: '2',
@@ -144,7 +147,9 @@ export const DashboardProvider = ({ children }: DashboardProviderProps) => {
       unit: '★',
       period: 'monthly',
       category: 'rating',
-      color: '#FFCE85'
+      color: '#FFCE85',
+      startDate: '',
+      dueDate: ''
     },
     {
       id: '3',
@@ -155,7 +160,9 @@ export const DashboardProvider = ({ children }: DashboardProviderProps) => {
       unit: '%',
       period: 'monthly',
       category: 'response',
-      color: '#FF4797'
+      color: '#FF4797',
+      startDate: '',
+      dueDate: ''
     }
   ]);
 
@@ -178,11 +185,11 @@ export const DashboardProvider = ({ children }: DashboardProviderProps) => {
   ]);
   
   const [apiConfigs, setApiConfigs] = useState<ApiConfig[]>([
-    { name: 'Google Reviews', enabled: false },
-    { name: 'TripAdvisor', enabled: false },
-    { name: 'Yelp', enabled: false },
-    { name: 'OpenAI Sentiment Analysis', enabled: false },
-    { name: 'Google NLP', enabled: false }
+    { name: 'Google Reviews', isConnected: false, enabled: false },
+    { name: 'TripAdvisor', isConnected: false, enabled: false },
+    { name: 'Yelp', isConnected: false, enabled: false },
+    { name: 'OpenAI Sentiment Analysis', isConnected: false, enabled: false },
+    { name: 'Google NLP', isConnected: false, enabled: false }
   ]);
   
   const [isLoading, setIsLoading] = useState(false);

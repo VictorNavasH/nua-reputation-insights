@@ -31,15 +31,16 @@ export interface DashboardStats {
   };
 }
 
-// Add missing type definitions that were causing errors
 export interface ReviewData {
-  id: number;
+  id: string | number;
   author: string;
   date: string;
   text: string;
   rating: number;
-  emoji: string;
+  emoji?: string;
   source: string;
+  replied?: boolean;
+  sentiment?: 'positive' | 'neutral' | 'negative';
 }
 
 export interface SentimentData {
@@ -52,6 +53,7 @@ export interface KpiData {
   averageRating: number;
   totalReviews: number;
   positivePercentage: number;
+  monthlyReviews: number; // Added to match usage
   monthlyTarget: number;
   comparedToPrevious: {
     averageRating: { value: number; trend: 'up' | 'down' | 'stable' };
@@ -62,10 +64,13 @@ export interface KpiData {
 }
 
 export interface ProgressData {
-  currentValue: number;
-  targetValue: number;
-  label: string;
-  color: string;
+  current: number;
+  target: number;
+  percentage: number;
+  color?: string;
+  label?: string;
+  currentValue?: number;
+  targetValue?: number;
 }
 
 export interface ReviewChartData {
@@ -77,13 +82,16 @@ export interface ReviewChartData {
 export interface GoalData {
   id: string;
   title: string;
+  description?: string; // Adding this property as it's used in context
   category: string;
   target: number;
   current: number;
   unit: string;
   dueDate: string;
   startDate: string;
-  status: 'in-progress' | 'completed' | 'at-risk';
+  status?: 'in-progress' | 'completed' | 'at-risk';
+  period?: string;
+  color?: string;
 }
 
 export interface WordCloudItem {
@@ -94,5 +102,8 @@ export interface WordCloudItem {
 export interface ApiConfig {
   name: string;
   isConnected: boolean;
+  enabled?: boolean; // Added to match usage
+  apiKey?: string; // Added to match usage
+  endpoint?: string; // Added to match usage
   lastSync?: string;
 }

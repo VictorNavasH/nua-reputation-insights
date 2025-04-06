@@ -19,10 +19,11 @@ const ApiIntegrationForm: React.FC<ApiIntegrationFormProps> = ({ apiName }) => {
   
   const apiConfig = apiConfigs.find(config => config.name === apiName) || {
     name: apiName,
+    isConnected: false,
     enabled: false
   };
   
-  const [isEnabled, setIsEnabled] = useState(apiConfig.enabled);
+  const [isEnabled, setIsEnabled] = useState(apiConfig.enabled || false);
   const [apiKey, setApiKey] = useState(apiConfig.apiKey || '');
   const [endpoint, setEndpoint] = useState(apiConfig.endpoint || '');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -137,7 +138,7 @@ const ApiIntegrationForm: React.FC<ApiIntegrationFormProps> = ({ apiName }) => {
               onClick={() => {
                 setApiKey(apiConfig.apiKey || '');
                 setEndpoint(apiConfig.endpoint || '');
-                setIsEnabled(apiConfig.enabled);
+                setIsEnabled(apiConfig.enabled || false);
               }}
               disabled={isSubmitting}
             >
