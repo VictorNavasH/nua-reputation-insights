@@ -99,9 +99,16 @@ const ReviewResponseDialog = ({ isOpen, onClose, review, onRespond }: ReviewResp
 
   if (!review) return null;
 
-  // Check if translation is available
+  // For debugging - log the review object to see its contents
+  console.log('Review in dialog:', review);
+  console.log('Is non-Spanish/Catalan:', isNonSpanishOrCatalan());
+  console.log('Has translation:', Boolean(review.reseña_traducida));
+
   const hasTranslation = Boolean(review.reseña_traducida);
   const shouldShowTranslationButton = isNonSpanishOrCatalan() && hasTranslation;
+  
+  // Debug the translation button conditions
+  console.log('Should show translation button:', shouldShowTranslationButton);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
