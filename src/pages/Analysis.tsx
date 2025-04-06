@@ -6,8 +6,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  LineChart, Line, Legend, AreaChart, Area
+  LineChart, Line, Legend, AreaChart, Area, PieChart, Pie, Cell
 } from 'recharts';
+import { useReviews } from '@/hooks/useReviews';
+import { Loader2 } from 'lucide-react';
 
 // Mock data for charts
 const wordMentionsData = [
@@ -88,6 +90,76 @@ const WordCloud = () => {
 
 const Analysis = () => {
   const [timeframe, setTimeframe] = useState('month');
+  const { reviews, isLoading, error } = useReviews();
+
+  // Generate rating distribution data from actual reviews
+  const generateRatingDistribution = () => {
+    if (!reviews.length) return [];
+    
+    // Initialize counts for each rating
+    const ratingCounts = {
+      5: 0,
+      4: 0,
+      3: 0,
+      2: 0,
+      1: 0
+    };
+    
+    // Count reviews by rating
+    reviews.forEach(review => {
+      const rating = Math.floor(review.rating);
+      if (rating >= 1 && rating <= 5) {
+        ratingCounts[rating]++;
+      }
+    });
+    
+    // Convert to array format for charts
+    return Object.entries(ratingCounts).map(([rating, count]) => ({
+      rating: `${rating} ★`,
+      count,
+      ratingValue: parseInt(rating)
+    })).sort((a, b) => b.ratingValue - a.ratingValue); // Sort by rating descending
+  };
+
+  // Generate data for pie chart
+  const ratingDistributionData = generateRatingDistribution();
+  
+  // Colors for the pie chart
+  const RATING_COLORS = [
+    '#00C49F', // 5 stars - Green
+    '#82ca9d', // 4 stars - Light Green
+    '#FFBB28', // 3 stars - Yellow
+    '#FF8042', // 2 stars - Orange
+    '#FF4242'  // 1 star - Red
+  ];
+
+  // Calculate percentage for each rating
+  const calculatePercentages = () => {
+    if (!ratingDistributionData.length) return [];
+    
+    const total = ratingDistributionData.reduce((sum, item) => sum + item.count, 0);
+    return ratingDistributionData.map(item => ({
+      ...item,
+      percentage: total > 0 ? Math.round((item.count / total) * 100) : 0
+    }));
+  };
+  
+  const ratingPercentages = calculatePercentages();
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-[#E8EDF3]">
+        <Header />
+        <main className="flex-grow px-6 py-8 flex items-center justify-center">
+          <div className="flex flex-col items-center">
+            <Loader2 className="h-8 w-8 animate-spin text-[#02B1C4] mb-4" />
+            <p className="text-[#2F2F4C]">Cargando datos de análisis...</p>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-[#E8EDF3]">
@@ -173,6 +245,71 @@ const Analysis = () => {
                       fill="#FE6D73" 
                     />
                   </AreaChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+            {/* Rating Distribution Bar Chart */}
+            <Card className="overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-[#FFCE85] to-[#FFCB77] pb-2">
+                <CardTitle className="text-lg font-medium text-white">Distribución de puntuaciones</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart
+                    data={ratingDistributionData}
+                    margin={{ top: 10, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="rating" />
+                    <YAxis />
+                    <Tooltip 
+                      formatter={(value, name) => [`${value} reseñas`, 'Cantidad']}
+                      labelFormatter={(label) => `Puntuación: ${label}`}
+                    />
+                    <Bar dataKey="count" name="Cantidad de reseñas">
+                      {ratingDistributionData.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={RATING_COLORS[4 - index]} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+            
+            {/* Rating Distribution Pie Chart */}
+            <Card className="overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-[#FF4797] to-[#FE6D73] pb-2">
+                <CardTitle className="text-lg font-medium text-white">Distribución porcentual de puntuaciones</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <ResponsiveContainer width="100%" height={300}>
+                  <PieChart>
+                    <Pie
+                      data={ratingPercentages}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={true}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      dataKey="count"
+                      nameKey="rating"
+                      label={({ rating, percentage }) => `${rating} (${percentage}%)`}
+                    >
+                      {ratingPercentages.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={RATING_COLORS[4 - index]} />
+                      ))}
+                    </Pie>
+                    <Tooltip 
+                      formatter={(value, name, props) => [
+                        `${value} reseñas (${props.payload.percentage}%)`, 
+                        'Cantidad'
+                      ]}
+                      labelFormatter={(label) => `Puntuación: ${label}`}
+                    />
+                  </PieChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
