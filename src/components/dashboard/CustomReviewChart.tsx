@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -47,7 +48,7 @@ const CustomReviewChart = () => {
             {!isLoading && reviewStats.thirtyDays.some(item => item.reviews > 0) && <div className="flex items-center gap-2">
                 <Star size={14} className="text-[#FFCE85] fill-[#FFCE85]" />
                 <span className="text-sm text-[#2F2F4C]/70">
-                  Puntuación media: {calculateAverageRating(reviewStats.thirtyDays)}
+                  {calculateAverageRating(reviewStats.thirtyDays)}
                 </span>
               </div>}
           </div>
