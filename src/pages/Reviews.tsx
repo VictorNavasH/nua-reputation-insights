@@ -5,7 +5,6 @@ import Footer from '../components/Footer';
 import ReviewResponseDialog from '@/components/reviews/ReviewResponseDialog';
 import ReviewFilters from '@/components/reviews/ReviewFilters';
 import ReviewHeader from '@/components/reviews/ReviewHeader';
-import LanguageFilter from '@/components/reviews/LanguageFilter';
 import ReviewContent from '@/components/reviews/ReviewContent';
 import { useReviews, Review } from '@/hooks/useReviews';
 
@@ -13,7 +12,6 @@ const Reviews = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [ratingFilter, setRatingFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
-  const [languageFilter, setLanguageFilter] = useState('all');
   const [viewType, setViewType] = useState<'table' | 'cards'>('table');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedReview, setSelectedReview] = useState<null | Review>(null);
@@ -32,11 +30,6 @@ const Reviews = () => {
     const matchesRating = 
       ratingFilter === 'all' || 
       review.rating === parseInt(ratingFilter);
-    
-    // Filter by language
-    const matchesLanguage =
-      languageFilter === 'all' ||
-      review.idioma === languageFilter;
     
     // Filter by date
     let matchesDate = true;
@@ -67,7 +60,7 @@ const Reviews = () => {
       }
     }
     
-    return matchesSearch && matchesRating && matchesLanguage && matchesDate;
+    return matchesSearch && matchesRating && matchesDate;
   });
 
   // Helper function to convert Spanish month abbreviation to number
@@ -95,20 +88,6 @@ const Reviews = () => {
     // This would be updated to use a state update function from the hook
   };
 
-  // Get unique languages from reviews for the filter
-  const languages = ['all', ...new Set(reviews.map(review => review.idioma || 'es'))];
-  
-  // Language names mapping
-  const languageNames: {[key: string]: string} = {
-    'all': 'Todos los idiomas',
-    'es': 'Español',
-    'en': 'Inglés',
-    'fr': 'Francés',
-    'de': 'Alemán',
-    'it': 'Italiano',
-    'pt': 'Portugués'
-  };
-
   // Update the view type based on tab selection
   useEffect(() => {
     setViewType(type => type);
@@ -133,14 +112,6 @@ const Reviews = () => {
               setRatingFilter={setRatingFilter}
               viewType={viewType}
               setViewType={setViewType}
-            />
-            
-            {/* Language filter */}
-            <LanguageFilter 
-              languageFilter={languageFilter}
-              setLanguageFilter={setLanguageFilter}
-              languages={languages}
-              languageNames={languageNames}
             />
           </div>
           
