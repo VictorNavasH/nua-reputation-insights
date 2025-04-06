@@ -10,7 +10,6 @@ import {
 import { useReviews } from '@/hooks/useReviews';
 import { Loader2 } from 'lucide-react';
 
-// Mock data for charts
 const wordMentionsData = [
   { word: 'Servicio', count: 42 },
   { word: 'Atención', count: 38 },
@@ -39,7 +38,6 @@ const sentimentComparisonData = [
   { name: 'Web', positive: 82, negative: 8, neutral: 10 },
 ];
 
-// Component for Word Cloud
 const WordCloud = () => {
   const wordTags = [
     { text: 'Servicio', value: 42 },
@@ -59,14 +57,13 @@ const WordCloud = () => {
     { text: 'Tecnología', value: 7 },
   ];
 
-  // Create a simple tag cloud based on word size proportional to value
   return (
     <div className="p-4 flex flex-wrap justify-center">
       {wordTags.map((word, index) => {
         const fontSize = Math.max(14, Math.min(36, 12 + word.value/5));
         const opacity = 0.7 + (word.value/100);
         const colorIndex = Math.floor((word.value/42) * 100);
-        const color = `hsl(${180 - colorIndex * 2}, 80%, 45%)`; // Varying from blue to teal
+        const color = `hsl(${180 - colorIndex * 2}, 80%, 45%)`;
         
         return (
           <div 
@@ -91,11 +88,9 @@ const Analysis = () => {
   const [timeframe, setTimeframe] = useState('month');
   const { reviews, isLoading, error } = useReviews();
 
-  // Generate rating distribution data from actual reviews
   const generateRatingDistribution = () => {
     if (!reviews.length) return [];
     
-    // Initialize counts for each rating
     const ratingCounts = {
       5: 0,
       4: 0,
@@ -104,7 +99,6 @@ const Analysis = () => {
       1: 0
     };
     
-    // Count reviews by rating
     reviews.forEach(review => {
       const rating = Math.floor(review.rating);
       if (rating >= 1 && rating <= 5) {
@@ -112,27 +106,23 @@ const Analysis = () => {
       }
     });
     
-    // Convert to array format for charts
     return Object.entries(ratingCounts).map(([rating, count]) => ({
       rating: `${rating} ★`,
       count,
       ratingValue: parseInt(rating)
-    })).sort((a, b) => b.ratingValue - a.ratingValue); // Sort by rating descending
+    })).sort((a, b) => b.ratingValue - a.ratingValue);
   };
 
-  // Generate data for pie chart
   const ratingDistributionData = generateRatingDistribution();
   
-  // Updated colors for the pie chart, changing the red tones to the specified teal color
   const RATING_COLORS = [
-    '#00C49F', // 5 stars - Green
-    '#82ca9d', // 4 stars - Light Green
-    '#FFBB28', // 3 stars - Yellow
-    '#02f2d2', // 2 stars - Teal (updated from orange)
-    '#02f2d2'  // 1 star - Teal (updated from red)
+    '#00C49F',
+    '#82ca9d',
+    '#FFBB28',
+    '#edadff',
+    '#edadff'
   ];
 
-  // Calculate percentage for each rating
   const calculatePercentages = () => {
     if (!ratingDistributionData.length) return [];
     
@@ -169,7 +159,6 @@ const Analysis = () => {
           <h1 className="text-2xl font-bold text-[#2F2F4C] mb-6">Análisis avanzado de Reseñas</h1>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            {/* Words Most Mentioned */}
             <Card className="overflow-hidden">
               <CardHeader className="bg-gradient-to-r from-[#02B1C4] to-[#364F6B] pb-2">
                 <CardTitle className="text-lg font-medium text-white">Palabras más mencionadas</CardTitle>
@@ -196,7 +185,6 @@ const Analysis = () => {
               </CardContent>
             </Card>
             
-            {/* Sentiment Evolution */}
             <Card className="overflow-hidden">
               <CardHeader className="bg-gradient-to-r from-[#02F2D2] to-[#02B1C4] pb-2">
                 <CardTitle className="text-lg font-medium text-white">Evolución del sentimiento</CardTitle>
@@ -250,9 +238,8 @@ const Analysis = () => {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            {/* Rating Distribution Bar Chart */}
             <Card className="overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-[#02f2d2] to-[#02B1C4] pb-2">
+              <CardHeader className="bg-gradient-to-r from-[#edadff] to-[#9b87f5] pb-2">
                 <CardTitle className="text-lg font-medium text-white">Distribución de puntuaciones</CardTitle>
               </CardHeader>
               <CardContent className="pt-4">
@@ -278,9 +265,8 @@ const Analysis = () => {
               </CardContent>
             </Card>
             
-            {/* Rating Distribution Pie Chart */}
             <Card className="overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-[#02f2d2] to-[#02B1C4] pb-2">
+              <CardHeader className="bg-gradient-to-r from-[#edadff] to-[#9b87f5] pb-2">
                 <CardTitle className="text-lg font-medium text-white">Distribución porcentual de puntuaciones</CardTitle>
               </CardHeader>
               <CardContent className="pt-4">
@@ -315,7 +301,6 @@ const Analysis = () => {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            {/* Positive vs Negative Comparison */}
             <Card className="overflow-hidden">
               <CardHeader className="bg-gradient-to-r from-[#FFCE85] to-[#FFCB77] pb-2">
                 <CardTitle className="text-lg font-medium text-white">Comparativa de sentimiento por fuente</CardTitle>
@@ -339,7 +324,6 @@ const Analysis = () => {
               </CardContent>
             </Card>
             
-            {/* Word Cloud */}
             <Card className="overflow-hidden">
               <CardHeader className="bg-gradient-to-r from-[#FF4797] to-[#FE6D73] pb-2">
                 <CardTitle className="text-lg font-medium text-white">Nube de palabras</CardTitle>
