@@ -32,10 +32,10 @@ const ReviewResponseDialog = ({ isOpen, onClose, review, onRespond }: ReviewResp
   const [showTranslated, setShowTranslated] = useState(false);
 
   // Function to check if the review is in Spanish or Catalan
-  const isSpanishOrCatalan = () => {
-    if (!review?.idioma) return true;
+  const isNonSpanishOrCatalan = () => {
+    if (!review?.idioma) return false;
     const lang = review.idioma.toLowerCase();
-    return lang === 'es' || lang === 'ca';
+    return lang !== 'es' && lang !== 'ca';
   };
 
   // Function to toggle between original and translated review
@@ -99,6 +99,10 @@ const ReviewResponseDialog = ({ isOpen, onClose, review, onRespond }: ReviewResp
 
   if (!review) return null;
 
+  // Check if translation is available
+  const hasTranslation = Boolean(review.reseña_traducida);
+  const shouldShowTranslationButton = isNonSpanishOrCatalan() && hasTranslation;
+
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-[600px]">
@@ -114,7 +118,7 @@ const ReviewResponseDialog = ({ isOpen, onClose, review, onRespond }: ReviewResp
             <div className="flex justify-between items-center mb-1">
               <h4 className="text-sm font-medium">Reseña original:</h4>
               
-              {!isSpanishOrCatalan() && review.reseña_traducida && (
+              {shouldShowTranslationButton && (
                 <Button 
                   variant="outline" 
                   size="sm" 
@@ -127,11 +131,11 @@ const ReviewResponseDialog = ({ isOpen, onClose, review, onRespond }: ReviewResp
               )}
             </div>
             <p className="text-sm text-gray-600">
-              {!isSpanishOrCatalan() && showTranslated && review.reseña_traducida 
+              {shouldShowTranslationButton && showTranslated 
                 ? review.reseña_traducida 
                 : review.review}
             </p>
-            {!isSpanishOrCatalan() && (
+            {isNonSpanishOrCatalan() && (
               <div className="mt-1 text-xs text-gray-400 flex items-center">
                 <Languages size={12} className="mr-1" />
                 {review.idioma?.toUpperCase() || 'Idioma desconocido'}
