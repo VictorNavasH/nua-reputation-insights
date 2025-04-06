@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh } from 'lucide-react';
+import React, { useState } from 'react';
+import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh, Languages } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card } from '@/components/ui/card';
@@ -27,6 +27,23 @@ interface ReviewsTableProps {
 }
 
 const ReviewsTable = ({ reviews, onOpenResponseDialog }: ReviewsTableProps) => {
+  // State to track which reviews are showing translations
+  const [translatedReviews, setTranslatedReviews] = useState<number[]>([]);
+  
+  // Function to toggle translation for a specific review
+  const toggleTranslation = (reviewId: number) => {
+    setTranslatedReviews(prev => 
+      prev.includes(reviewId) 
+        ? prev.filter(id => id !== reviewId) 
+        : [...prev, reviewId]
+    );
+  };
+
+  // Function to check if a language needs translation (not Spanish or Catalan)
+  const needsTranslation = (language?: string) => {
+    return language && !['es', 'ca'].includes(language.toLowerCase());
+  };
+
   // Function to render stars based on rating
   const renderStars = (rating: number) => {
     return Array(5).fill(0).map((_, index) => (
@@ -93,20 +110,37 @@ const ReviewsTable = ({ reviews, onOpenResponseDialog }: ReviewsTableProps) => {
                 </TableCell>
                 <TableCell className="max-w-xs">
                   <div className="relative">
-                    <p className="truncate">{review.review}</p>
+                    <p className="truncate">
+                      {translatedReviews.includes(review.id) && review.reseña_traducida 
+                        ? review.reseña_traducida 
+                        : review.review}
+                    </p>
                   </div>
                 </TableCell>
                 <TableCell>{renderSentiment(review.sentiment)}</TableCell>
                 <TableCell>
-                  <Button 
-                    variant={review.responded ? "outline" : "default"} 
-                    size="sm"
-                    className="gap-2"
-                    onClick={() => onOpenResponseDialog(review)}
-                  >
-                    <MessageCircle size={14} />
-                    {review.responded ? "Respondida" : "Responder"}
-                  </Button>
+                  <div className="flex gap-2">
+                    {needsTranslation(review.idioma) && (
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="gap-2"
+                        onClick={() => toggleTranslation(review.id)}
+                      >
+                        <Languages size={14} />
+                        {translatedReviews.includes(review.id) ? "Ver original" : "Traducir"}
+                      </Button>
+                    )}
+                    <Button 
+                      variant={review.responded ? "outline" : "default"} 
+                      size="sm"
+                      className="gap-2"
+                      onClick={() => onOpenResponseDialog(review)}
+                    >
+                      <MessageCircle size={14} />
+                      {review.responded ? "Respondida" : "Responder"}
+                    </Button>
+                  </div>
                 </TableCell>
               </TableRow>
             ))

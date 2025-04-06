@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh } from 'lucide-react';
+import React, { useState } from 'react';
+import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh, Languages } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -26,6 +26,23 @@ interface ReviewsCardsProps {
 }
 
 const ReviewsCards = ({ reviews, onOpenResponseDialog }: ReviewsCardsProps) => {
+  // State to track which reviews are showing translations
+  const [translatedReviews, setTranslatedReviews] = useState<number[]>([]);
+  
+  // Function to toggle translation for a specific review
+  const toggleTranslation = (reviewId: number) => {
+    setTranslatedReviews(prev => 
+      prev.includes(reviewId) 
+        ? prev.filter(id => id !== reviewId) 
+        : [...prev, reviewId]
+    );
+  };
+
+  // Function to check if a language needs translation (not Spanish or Catalan)
+  const needsTranslation = (language?: string) => {
+    return language && !['es', 'ca'].includes(language.toLowerCase());
+  };
+
   // Function to render stars based on rating
   const renderStars = (rating: number) => {
     return Array(5).fill(0).map((_, index) => (
@@ -80,7 +97,11 @@ const ReviewsCards = ({ reviews, onOpenResponseDialog }: ReviewsCardsProps) => {
               
               <div className="mb-4">
                 <div className="relative">
-                  <p className="text-sm">{review.review}</p>
+                  <p className="text-sm">
+                    {translatedReviews.includes(review.id) && review.reseña_traducida 
+                      ? review.reseña_traducida 
+                      : review.review}
+                  </p>
                 </div>
               </div>
               
@@ -89,15 +110,28 @@ const ReviewsCards = ({ reviews, onOpenResponseDialog }: ReviewsCardsProps) => {
                   <span className="mr-2">Sentimiento:</span>
                   {renderSentiment(review.sentiment)}
                 </div>
-                <Button 
-                  variant={review.responded ? "outline" : "default"} 
-                  size="sm"
-                  className="gap-2"
-                  onClick={() => onOpenResponseDialog(review)}
-                >
-                  <MessageCircle size={14} />
-                  {review.responded ? "Respondida" : "Responder"}
-                </Button>
+                <div className="flex gap-2">
+                  {needsTranslation(review.idioma) && (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="gap-2"
+                      onClick={() => toggleTranslation(review.id)}
+                    >
+                      <Languages size={14} />
+                      {translatedReviews.includes(review.id) ? "Ver original" : "Traducir"}
+                    </Button>
+                  )}
+                  <Button 
+                    variant={review.responded ? "outline" : "default"} 
+                    size="sm"
+                    className="gap-2"
+                    onClick={() => onOpenResponseDialog(review)}
+                  >
+                    <MessageCircle size={14} />
+                    {review.responded ? "Respondida" : "Responder"}
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>
