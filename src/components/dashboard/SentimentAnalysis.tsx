@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
@@ -10,6 +10,16 @@ const data = [
 ];
 
 const SentimentAnalysis = () => {
+  const [activeIndex, setActiveIndex] = useState<number | null>(null);
+  
+  const onPieEnter = (_: any, index: number) => {
+    setActiveIndex(index);
+  };
+  
+  const onPieLeave = () => {
+    setActiveIndex(null);
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
       <Card className="bg-white shadow-sm lg:col-span-1">
@@ -19,26 +29,44 @@ const SentimentAnalysis = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-[250px] mt-4">
+          <div className="h-[280px] mt-4"> {/* Increased height to provide more space */}
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={data}
                   cx="50%"
                   cy="50%"
-                  labelLine={false}
-                  outerRadius={80}
+                  labelLine={true}
+                  outerRadius={({ index }) => (activeIndex === index ? 90 : 80)} /* Expand on hover */
+                  innerRadius={({ index }) => (activeIndex === index ? 5 : 0)} /* Small inner radius on hover */
+                  paddingAngle={2}
                   fill="#8884d8"
                   dataKey="value"
                   label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  onMouseEnter={onPieEnter}
+                  onMouseLeave={onPieLeave}
+                  isAnimationActive={true}
+                  animationDuration={300}
                 >
                   {data.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={entry.color}
+                      stroke={activeIndex === index ? "#FFFFFF" : "none"}
+                      strokeWidth={activeIndex === index ? 2 : 0}
+                    />
                   ))}
                 </Pie>
                 <Tooltip 
                   formatter={(value) => `${value}%`}
                   labelFormatter={(name) => `Sentimiento: ${name}`}
+                  contentStyle={{ 
+                    backgroundColor: 'white',
+                    borderRadius: '8px',
+                    border: '1px solid #E5E7EB',
+                    boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                    padding: '8px 12px',
+                  }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -46,7 +74,12 @@ const SentimentAnalysis = () => {
           
           <div className="mt-4 flex justify-center space-x-6">
             {data.map((item, index) => (
-              <div key={index} className="flex items-center">
+              <div 
+                key={index} 
+                className="flex items-center cursor-pointer transition-transform hover:scale-110" 
+                onMouseEnter={() => setActiveIndex(index)}
+                onMouseLeave={() => setActiveIndex(null)}
+              >
                 <div 
                   className="w-3 h-3 rounded-full mr-2" 
                   style={{ backgroundColor: item.color }} 
