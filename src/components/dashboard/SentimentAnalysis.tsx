@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip, Legend } from 'recharts';
 
 const data = [
   { name: 'Positivo', value: 78, color: '#02B1C4' },
@@ -29,20 +29,20 @@ const SentimentAnalysis = () => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="h-[320px] mt-4"> {/* Increased height to prevent text cutoff */}
+          <div className="h-[340px] mt-2"> {/* Increased height for better layout */}
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={data}
                   cx="50%"
-                  cy="50%"
-                  labelLine={true}
-                  outerRadius={80}
-                  innerRadius={0}
-                  paddingAngle={2}
+                  cy="45%" {/* Moved up slightly to create more space */}
+                  labelLine={false} {/* Removed label lines for cleaner look */}
+                  outerRadius={75}
+                  innerRadius={25} {/* Added inner radius to create a donut chart */}
+                  paddingAngle={3}
                   fill="#8884d8"
                   dataKey="value"
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  label={({ name, percent }) => `${(percent * 100).toFixed(0)}%`} {/* Simplified label */}
                   onMouseEnter={onPieEnter}
                   onMouseLeave={onPieLeave}
                   isAnimationActive={true}
@@ -54,6 +54,14 @@ const SentimentAnalysis = () => {
                       fill={entry.color}
                       stroke={activeIndex === index ? "#FFFFFF" : "none"}
                       strokeWidth={activeIndex === index ? 2 : 0}
+                      // Scale up the active segment slightly
+                      {...(activeIndex === index && { 
+                        style: { 
+                          transform: 'scale(1.05)', 
+                          transformOrigin: 'center',
+                          transformBox: 'fill-box'
+                        } 
+                      })}
                     />
                   ))}
                 </Pie>
@@ -72,16 +80,16 @@ const SentimentAnalysis = () => {
             </ResponsiveContainer>
           </div>
           
-          <div className="mt-4 flex justify-center space-x-6">
+          <div className="mt-6 flex justify-center space-x-6">
             {data.map((item, index) => (
               <div 
                 key={index} 
-                className="flex items-center cursor-pointer transition-transform hover:scale-110" 
+                className="flex items-center cursor-pointer transition-all duration-200 hover:scale-110" 
                 onMouseEnter={() => setActiveIndex(index)}
                 onMouseLeave={() => setActiveIndex(null)}
               >
                 <div 
-                  className="w-3 h-3 rounded-full mr-2" 
+                  className={`w-3.5 h-3.5 rounded-full mr-2 ${activeIndex === index ? 'ring-2 ring-gray-200' : ''}`}
                   style={{ backgroundColor: item.color }} 
                 />
                 <span className="text-sm font-medium">{item.name}: {item.value}%</span>
