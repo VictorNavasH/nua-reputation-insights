@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { MessageSquare, Sparkles } from 'lucide-react';
+import { MessageSquare, Sparkles, Languages } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import {
@@ -20,6 +20,8 @@ interface ReviewResponseDialogProps {
     id: number;
     customer: string;
     review: string;
+    idioma?: string;
+    reseña_traducida?: string;
   } | null;
   onRespond: (id: number, response: string) => void;
 }
@@ -27,6 +29,20 @@ interface ReviewResponseDialogProps {
 const ReviewResponseDialog = ({ isOpen, onClose, review, onRespond }: ReviewResponseDialogProps) => {
   const [response, setResponse] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [showTranslated, setShowTranslated] = useState(false);
+
+  // Function to check if the review is in Spanish or Catalan
+  const isSpanishOrCatalan = () => {
+    if (!review?.idioma) return true;
+    const lang = review.idioma.toLowerCase();
+    return lang === 'es' || lang === 'ca';
+  };
+
+  // Function to toggle between original and translated review
+  const toggleTranslation = () => {
+    setShowTranslated(prev => !prev);
+    toast.success(showTranslated ? 'Mostrando reseña original' : 'Mostrando reseña traducida');
+  };
 
   const handleSubmit = () => {
     if (!review) return;
@@ -95,8 +111,32 @@ const ReviewResponseDialog = ({ isOpen, onClose, review, onRespond }: ReviewResp
 
         <div className="py-4">
           <div className="bg-gray-50 p-4 rounded-lg mb-4">
-            <h4 className="text-sm font-medium mb-1">Reseña original:</h4>
-            <p className="text-sm text-gray-600">{review.review}</p>
+            <div className="flex justify-between items-center mb-1">
+              <h4 className="text-sm font-medium">Reseña original:</h4>
+              
+              {!isSpanishOrCatalan() && review.reseña_traducida && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={toggleTranslation}
+                  className="flex items-center gap-1 text-xs"
+                >
+                  <Languages size={14} />
+                  {showTranslated ? 'Ver original' : 'Traducir'}
+                </Button>
+              )}
+            </div>
+            <p className="text-sm text-gray-600">
+              {!isSpanishOrCatalan() && showTranslated && review.reseña_traducida 
+                ? review.reseña_traducida 
+                : review.review}
+            </p>
+            {!isSpanishOrCatalan() && (
+              <div className="mt-1 text-xs text-gray-400 flex items-center">
+                <Languages size={12} className="mr-1" />
+                {review.idioma?.toUpperCase() || 'Idioma desconocido'}
+              </div>
+            )}
           </div>
           
           <Textarea
