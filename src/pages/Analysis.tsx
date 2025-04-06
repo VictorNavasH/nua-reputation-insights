@@ -1,5 +1,4 @@
-
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,7 +6,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend, AreaChart, Area, PieChart, Pie, Cell } from 'recharts';
 import { useReviews } from '@/hooks/useReviews';
 import { Loader2 } from 'lucide-react';
-
 const wordMentionsData = [{
   word: 'Servicio',
   count: 42
@@ -33,7 +31,6 @@ const wordMentionsData = [{
   word: 'Experiencia',
   count: 18
 }];
-
 const sentimentTrendData = [{
   date: '01/06',
   positive: 70,
@@ -70,13 +67,27 @@ const sentimentTrendData = [{
   negative: 8,
   neutral: 10
 }];
-
-const sourceDistributionData = [
-  { name: 'Google', percentage: 65 },
-  { name: 'Tripadvisor', percentage: 25 },
-  { name: 'Internas', percentage: 10 }
-];
-
+const sentimentComparisonData = [{
+  name: 'Google',
+  positive: 78,
+  negative: 12,
+  neutral: 10
+}, {
+  name: 'Facebook',
+  positive: 72,
+  negative: 18,
+  neutral: 10
+}, {
+  name: 'Tripadvisor',
+  positive: 68,
+  negative: 22,
+  neutral: 10
+}, {
+  name: 'Web',
+  positive: 82,
+  negative: 8,
+  neutral: 10
+}];
 const WordCloud = () => {
   const wordTags = [{
     text: 'Servicio',
@@ -141,7 +152,6 @@ const WordCloud = () => {
     })}
     </div>;
 };
-
 const Analysis = () => {
   const [timeframe, setTimeframe] = useState('month');
   const {
@@ -149,7 +159,6 @@ const Analysis = () => {
     isLoading,
     error
   } = useReviews();
-
   const generateRatingDistribution = () => {
     if (!reviews.length) return [];
     const ratingCounts = {
@@ -171,10 +180,8 @@ const Analysis = () => {
       ratingValue: parseInt(rating)
     })).sort((a, b) => b.ratingValue - a.ratingValue);
   };
-
   const ratingDistributionData = generateRatingDistribution();
   const RATING_COLORS = ['#00C49F', '#82ca9d', '#FFBB28', '#edadff', '#edadff'];
-
   const calculatePercentages = () => {
     if (!ratingDistributionData.length) return [];
     const total = ratingDistributionData.reduce((sum, item) => sum + item.count, 0);
@@ -183,9 +190,7 @@ const Analysis = () => {
       percentage: total > 0 ? Math.round(item.count / total * 100) : 0
     }));
   };
-
   const ratingPercentages = calculatePercentages();
-
   if (isLoading) {
     return <div className="min-h-screen flex flex-col bg-[#E8EDF3]">
         <Header />
@@ -198,7 +203,6 @@ const Analysis = () => {
         <Footer />
       </div>;
   }
-
   return <div className="min-h-screen flex flex-col bg-[#E8EDF3]">
       <Header />
       
@@ -315,6 +319,31 @@ const Analysis = () => {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <Card className="overflow-hidden">
+              <CardHeader className="bg-gradient-to-r from-[#ffce85] to-[#02f2d2] pb-2">
+                <CardTitle className="text-lg font-medium text-white">Comparativa de sentimiento por fuente</CardTitle>
+              </CardHeader>
+              <CardContent className="pt-4">
+                <ResponsiveContainer width="100%" height={300}>
+                  <BarChart data={sentimentComparisonData} margin={{
+                  top: 20,
+                  right: 30,
+                  left: 20,
+                  bottom: 5
+                }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="positive" name="Positivas" stackId="a" fill="#02F2D2" />
+                    <Bar dataKey="neutral" name="Neutras" stackId="a" fill="#FFCB77" />
+                    <Bar dataKey="negative" name="Negativas" stackId="a" fill="#FE6D73" />
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+            
+            <Card className="overflow-hidden">
               <CardHeader className="bg-gradient-to-r from-[#ffce85] to-[#ff4797] pb-2">
                 <CardTitle className="text-lg font-medium text-white">Nube de palabras</CardTitle>
               </CardHeader>
@@ -329,5 +358,4 @@ const Analysis = () => {
       <Footer />
     </div>;
 };
-
 export default Analysis;
