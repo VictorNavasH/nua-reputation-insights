@@ -344,7 +344,7 @@ const Analysis = () => {
             </Card>
             
             <Card className="overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-[#FF4797] to-[#FE6D73] pb-2">
+              <CardHeader className="bg-gradient-to-r from-[#ffce85] to-[#ff4797] pb-2">
                 <CardTitle className="text-lg font-medium text-white">Nube de palabras</CardTitle>
               </CardHeader>
               <CardContent className="pt-4">
