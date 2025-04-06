@@ -3,6 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { useDashboard } from '@/contexts/DashboardContext';
+import { TrendingUp } from 'lucide-react';
 
 const ProgressCard = () => {
   const { progressData } = useDashboard();
@@ -16,10 +17,13 @@ const ProgressCard = () => {
   
   return (
     <Card className="overflow-hidden rounded-2xl border-none shadow-md bg-white mb-8">
-      <CardHeader className="pb-2">
-        <CardTitle className="text-lg font-semibold text-[#2F2F4C]">
-          Progreso hacia el objetivo de este mes
-        </CardTitle>
+      <CardHeader className="pb-2 flex flex-row items-center justify-between">
+        <div className="flex items-center">
+          <TrendingUp className="h-5 w-5 mr-2 text-[#02B1C4]" />
+          <CardTitle className="text-lg font-semibold text-[#2F2F4C]">
+            Progreso hacia el objetivo de este mes
+          </CardTitle>
+        </div>
       </CardHeader>
       <CardContent>
         <div className="mt-2">
