@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -124,13 +123,13 @@ const Analysis = () => {
   // Generate data for pie chart
   const ratingDistributionData = generateRatingDistribution();
   
-  // Colors for the pie chart
+  // Updated colors for the pie chart, changing the red tones to the specified teal color
   const RATING_COLORS = [
     '#00C49F', // 5 stars - Green
     '#82ca9d', // 4 stars - Light Green
     '#FFBB28', // 3 stars - Yellow
-    '#FF8042', // 2 stars - Orange
-    '#FF4242'  // 1 star - Red
+    '#02f2d2', // 2 stars - Teal (updated from orange)
+    '#02f2d2'  // 1 star - Teal (updated from red)
   ];
 
   // Calculate percentage for each rating
@@ -253,7 +252,7 @@ const Analysis = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             {/* Rating Distribution Bar Chart */}
             <Card className="overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-[#FFCE85] to-[#FFCB77] pb-2">
+              <CardHeader className="bg-gradient-to-r from-[#02f2d2] to-[#02B1C4] pb-2">
                 <CardTitle className="text-lg font-medium text-white">Distribución de puntuaciones</CardTitle>
               </CardHeader>
               <CardContent className="pt-4">
@@ -281,7 +280,7 @@ const Analysis = () => {
             
             {/* Rating Distribution Pie Chart */}
             <Card className="overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-[#FF4797] to-[#FE6D73] pb-2">
+              <CardHeader className="bg-gradient-to-r from-[#02f2d2] to-[#02B1C4] pb-2">
                 <CardTitle className="text-lg font-medium text-white">Distribución porcentual de puntuaciones</CardTitle>
               </CardHeader>
               <CardContent className="pt-4">
