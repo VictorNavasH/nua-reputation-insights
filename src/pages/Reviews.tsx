@@ -2,20 +2,12 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Download, Loader2, Languages } from 'lucide-react';
 import ReviewResponseDialog from '@/components/reviews/ReviewResponseDialog';
 import ReviewFilters from '@/components/reviews/ReviewFilters';
-import ReviewsTable from '@/components/reviews/ReviewsTable';
-import ReviewsCards from '@/components/reviews/ReviewsCards';
+import ReviewHeader from '@/components/reviews/ReviewHeader';
+import LanguageFilter from '@/components/reviews/LanguageFilter';
+import ReviewContent from '@/components/reviews/ReviewContent';
 import { useReviews, Review } from '@/hooks/useReviews';
-import { 
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover';
 
 const Reviews = () => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -128,13 +120,7 @@ const Reviews = () => {
       
       <main className="flex-grow px-6 py-8">
         <div className="max-w-7xl mx-auto">
-          <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold text-[#2F2F4C]">Reseñas de clientes</h1>
-            <Button variant="outline" className="gap-2">
-              <Download size={16} />
-              Exportar CSV
-            </Button>
-          </div>
+          <ReviewHeader />
           
           {/* Filters section */}
           <div className="flex flex-wrap items-center gap-4 mb-6">
@@ -150,71 +136,21 @@ const Reviews = () => {
             />
             
             {/* Language filter */}
-            <Popover>
-              <PopoverTrigger asChild>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="gap-2 h-9 px-3"
-                >
-                  <Languages size={16} />
-                  {languageNames[languageFilter] || languageFilter}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-60 p-2">
-                <div className="space-y-1">
-                  {languages.map((lang) => (
-                    <Button
-                      key={lang}
-                      variant={languageFilter === lang ? "default" : "ghost"}
-                      className="w-full justify-start"
-                      onClick={() => setLanguageFilter(lang)}
-                    >
-                      {languageNames[lang] || lang}
-                    </Button>
-                  ))}
-                </div>
-              </PopoverContent>
-            </Popover>
+            <LanguageFilter 
+              languageFilter={languageFilter}
+              setLanguageFilter={setLanguageFilter}
+              languages={languages}
+              languageNames={languageNames}
+            />
           </div>
           
-          {/* Loading state */}
-          {isLoading && (
-            <div className="flex justify-center items-center p-12">
-              <Loader2 className="h-8 w-8 animate-spin text-[#02B1C4]" />
-              <span className="ml-3 text-[#2F2F4C]">Cargando reseñas...</span>
-            </div>
-          )}
-          
-          {/* Error state */}
-          {error && (
-            <Card className="mb-6">
-              <CardContent className="p-6 text-center text-red-500">
-                {error}
-                <Button 
-                  className="mt-4" 
-                  onClick={() => window.location.reload()}
-                >
-                  Reintentar
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-          
-          {/* Reviews display */}
-          {!isLoading && !error && (
-            viewType === 'table' ? (
-              <ReviewsTable 
-                reviews={filteredReviews} 
-                onOpenResponseDialog={handleOpenResponseDialog} 
-              />
-            ) : (
-              <ReviewsCards 
-                reviews={filteredReviews} 
-                onOpenResponseDialog={handleOpenResponseDialog} 
-              />
-            )
-          )}
+          <ReviewContent 
+            isLoading={isLoading}
+            error={error}
+            viewType={viewType}
+            filteredReviews={filteredReviews}
+            onOpenResponseDialog={handleOpenResponseDialog}
+          />
 
           {/* Response Dialog */}
           <ReviewResponseDialog 

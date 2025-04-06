@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh, Languages, Translate } from 'lucide-react';
+import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh, Languages } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 
@@ -26,10 +25,8 @@ interface ReviewsCardsProps {
 }
 
 const ReviewsCards = ({ reviews, onOpenResponseDialog }: ReviewsCardsProps) => {
-  // State to track which reviews are showing translations
   const [translatedReviews, setTranslatedReviews] = useState<number[]>([]);
   
-  // Function to toggle translation for a specific review
   const toggleTranslation = (reviewId: number) => {
     setTranslatedReviews(prev => 
       prev.includes(reviewId) 
@@ -38,12 +35,10 @@ const ReviewsCards = ({ reviews, onOpenResponseDialog }: ReviewsCardsProps) => {
     );
   };
 
-  // Function to check if a language needs translation (not Spanish or Catalan)
   const needsTranslation = (language?: string) => {
     return language && !['es', 'ca'].includes(language.toLowerCase());
   };
 
-  // Function to render stars based on rating
   const renderStars = (rating: number) => {
     return Array(5).fill(0).map((_, index) => (
       <Star 
@@ -54,7 +49,6 @@ const ReviewsCards = ({ reviews, onOpenResponseDialog }: ReviewsCardsProps) => {
     ));
   };
 
-  // Function to render sentiment emoji
   const renderSentiment = (sentiment: string) => {
     switch (sentiment) {
       case 'positive':
@@ -118,7 +112,7 @@ const ReviewsCards = ({ reviews, onOpenResponseDialog }: ReviewsCardsProps) => {
                       className="gap-2"
                       onClick={() => toggleTranslation(review.id)}
                     >
-                      <Translate size={14} />
+                      <Languages size={14} />
                       {translatedReviews.includes(review.id) ? "Ver original" : "Traducir"}
                     </Button>
                   )}
