@@ -102,25 +102,27 @@ const ReviewsCards = ({ reviews, onOpenResponseDialog }: ReviewsCardsProps) => {
               </div>
               
               <div className="mb-4">
-                {/* Show translated text if available and translation is toggled on */}
-                <p className="text-sm">
-                  {translatedReviews[review.UUID] && review.reseña_traducida 
-                    ? review.reseña_traducida 
-                    : review.review}
-                </p>
-                
-                {/* Show translation button only for non-Spanish reviews */}
-                {needsTranslation(review) && (
-                  <Button 
-                    variant="ghost" 
-                    size="sm" 
-                    className="mt-2 h-7 text-xs flex items-center gap-1 text-[#02B1C4] hover:text-[#02B1C4]/80 hover:bg-[#02B1C4]/10"
-                    onClick={() => handleTranslate(review.UUID)}
-                  >
-                    <Languages size={14} />
-                    {translatedReviews[review.UUID] ? "Ver original" : "Traducir"}
-                  </Button>
-                )}
+                <div className="relative">
+                  {/* Show translated text if available and translation is toggled on */}
+                  <p className="text-sm">
+                    {translatedReviews[review.UUID] && review.reseña_traducida 
+                      ? review.reseña_traducida 
+                      : review.review}
+                  </p>
+                  
+                  {/* Show translation button inside the review area for non-Spanish reviews */}
+                  {needsTranslation(review) && (
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      className="absolute top-0 right-0 h-7 text-xs flex items-center gap-1 text-[#02B1C4] hover:text-[#02B1C4]/80 hover:bg-[#02B1C4]/10"
+                      onClick={() => handleTranslate(review.UUID)}
+                    >
+                      <Languages size={14} />
+                      {translatedReviews[review.UUID] ? "Ver original" : "Traducir"}
+                    </Button>
+                  )}
+                </div>
               </div>
               
               <div className="flex justify-between items-center">

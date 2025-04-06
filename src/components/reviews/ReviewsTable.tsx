@@ -115,19 +115,19 @@ const ReviewsTable = ({ reviews, onOpenResponseDialog }: ReviewsTableProps) => {
                   <div className="flex">{renderStars(review.rating)}</div>
                 </TableCell>
                 <TableCell className="max-w-xs">
-                  <div>
+                  <div className="relative">
                     <p className="truncate">
                       {translatedReviews[review.UUID] && review.reseña_traducida 
                         ? review.reseña_traducida 
                         : review.review}
                     </p>
                     
-                    {/* Show translation button only for non-Spanish reviews */}
+                    {/* Show translation button inside the review cell for non-Spanish reviews */}
                     {needsTranslation(review) && (
                       <Button 
                         variant="ghost" 
                         size="sm" 
-                        className="mt-1 h-7 text-xs flex items-center gap-1 text-[#02B1C4] hover:text-[#02B1C4]/80 hover:bg-[#02B1C4]/10"
+                        className="absolute top-0 right-0 h-7 text-xs flex items-center gap-1 text-[#02B1C4] hover:text-[#02B1C4]/80 hover:bg-[#02B1C4]/10"
                         onClick={() => handleTranslate(review.UUID)}
                       >
                         <Languages size={14} />
