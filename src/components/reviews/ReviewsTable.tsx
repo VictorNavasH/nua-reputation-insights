@@ -1,10 +1,9 @@
 
-import React, { useState } from 'react';
-import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh, Languages } from 'lucide-react';
+import React from 'react';
+import { MessageCircle, Star, ThumbsUp, ThumbsDown, Meh } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card } from '@/components/ui/card';
-import { toast } from 'sonner';
 
 interface Review {
   id: number;
@@ -28,8 +27,6 @@ interface ReviewsTableProps {
 }
 
 const ReviewsTable = ({ reviews, onOpenResponseDialog }: ReviewsTableProps) => {
-  const [translatedReviews, setTranslatedReviews] = useState<{[key: string]: boolean}>({});
-  
   // Function to render stars based on rating
   const renderStars = (rating: number) => {
     return Array(5).fill(0).map((_, index) => (
@@ -53,26 +50,6 @@ const ReviewsTable = ({ reviews, onOpenResponseDialog }: ReviewsTableProps) => {
       default:
         return null;
     }
-  };
-
-  // Function to handle translation
-  const handleTranslate = (reviewId: string) => {
-    // Toggle translation state for this review
-    setTranslatedReviews(prev => ({
-      ...prev,
-      [reviewId]: !prev[reviewId]
-    }));
-    
-    // Show toast notification
-    toast.success("Reseña traducida correctamente", {
-      description: "Se ha traducido la reseña al español",
-      duration: 3000,
-    });
-  };
-
-  // Check if a review needs translation button (is not in Spanish)
-  const needsTranslation = (review: Review) => {
-    return review.idioma && review.idioma !== 'es';
   };
 
   return (
@@ -116,24 +93,7 @@ const ReviewsTable = ({ reviews, onOpenResponseDialog }: ReviewsTableProps) => {
                 </TableCell>
                 <TableCell className="max-w-xs">
                   <div className="relative">
-                    <p className="truncate">
-                      {translatedReviews[review.UUID] && review.reseña_traducida 
-                        ? review.reseña_traducida 
-                        : review.review}
-                    </p>
-                    
-                    {/* Show translation button inside the review cell for non-Spanish reviews */}
-                    {needsTranslation(review) && (
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="absolute top-0 right-0 h-7 text-xs flex items-center gap-1 text-[#02B1C4] hover:text-[#02B1C4]/80 hover:bg-[#02B1C4]/10"
-                        onClick={() => handleTranslate(review.UUID)}
-                      >
-                        <Languages size={14} />
-                        {translatedReviews[review.UUID] ? "Ver original" : "Traducir"}
-                      </Button>
-                    )}
+                    <p className="truncate">{review.review}</p>
                   </div>
                 </TableCell>
                 <TableCell>{renderSentiment(review.sentiment)}</TableCell>
