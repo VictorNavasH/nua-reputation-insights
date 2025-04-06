@@ -319,7 +319,7 @@ const Analysis = () => {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
             <Card className="overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-[#FFCE85] to-[#FFCB77] pb-2">
+              <CardHeader className="bg-gradient-to-r from-[#ffce85] to-[#02f2d2] pb-2">
                 <CardTitle className="text-lg font-medium text-white">Comparativa de sentimiento por fuente</CardTitle>
               </CardHeader>
               <CardContent className="pt-4">
