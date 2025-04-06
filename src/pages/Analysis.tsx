@@ -298,7 +298,7 @@ const Analysis = () => {
             </Card>
             
             <Card className="overflow-hidden">
-              <CardHeader className="bg-gradient-to-r from-[#edadff] to-[#9b87f5] pb-2">
+              <CardHeader className="bg-gradient-to-r from-[#00d1b7] to-[#ff4797] pb-2">
                 <CardTitle className="text-lg font-medium text-white">Distribución porcentual de puntuaciones</CardTitle>
               </CardHeader>
               <CardContent className="pt-4">
