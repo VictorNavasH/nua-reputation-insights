@@ -5,17 +5,23 @@ import Footer from '../components/Footer';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Download, Loader2 } from 'lucide-react';
+import { Download, Loader2, Languages } from 'lucide-react';
 import ReviewResponseDialog from '@/components/reviews/ReviewResponseDialog';
 import ReviewFilters from '@/components/reviews/ReviewFilters';
 import ReviewsTable from '@/components/reviews/ReviewsTable';
 import ReviewsCards from '@/components/reviews/ReviewsCards';
 import { useReviews, Review } from '@/hooks/useReviews';
+import { 
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover';
 
 const Reviews = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [ratingFilter, setRatingFilter] = useState('all');
   const [dateFilter, setDateFilter] = useState('all');
+  const [languageFilter, setLanguageFilter] = useState('all');
   const [viewType, setViewType] = useState<'table' | 'cards'>('table');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [selectedReview, setSelectedReview] = useState<null | Review>(null);
@@ -35,12 +41,17 @@ const Reviews = () => {
       ratingFilter === 'all' || 
       review.rating === parseInt(ratingFilter);
     
+    // Filter by language
+    const matchesLanguage =
+      languageFilter === 'all' ||
+      review.idioma === languageFilter;
+    
     // Filter by date
     let matchesDate = true;
     if (dateFilter !== 'all') {
       const reviewDate = new Date(review.date.split(' ').slice(-1)[0] + '-' + 
-                                 getMonthNumber(review.date.split(' ')[1]) + '-' + 
-                                 review.date.split(' ')[0]);
+                               getMonthNumber(review.date.split(' ')[1]) + '-' + 
+                               review.date.split(' ')[0]);
       const today = new Date();
       
       switch(dateFilter) {
@@ -64,7 +75,7 @@ const Reviews = () => {
       }
     }
     
-    return matchesSearch && matchesRating && matchesDate;
+    return matchesSearch && matchesRating && matchesLanguage && matchesDate;
   });
 
   // Helper function to convert Spanish month abbreviation to number
@@ -92,6 +103,20 @@ const Reviews = () => {
     // This would be updated to use a state update function from the hook
   };
 
+  // Get unique languages from reviews for the filter
+  const languages = ['all', ...new Set(reviews.map(review => review.idioma || 'es'))];
+  
+  // Language names mapping
+  const languageNames: {[key: string]: string} = {
+    'all': 'Todos los idiomas',
+    'es': 'Español',
+    'en': 'Inglés',
+    'fr': 'Francés',
+    'de': 'Alemán',
+    'it': 'Italiano',
+    'pt': 'Portugués'
+  };
+
   // Update the view type based on tab selection
   useEffect(() => {
     setViewType(type => type);
@@ -112,16 +137,46 @@ const Reviews = () => {
           </div>
           
           {/* Filters section */}
-          <ReviewFilters 
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            dateFilter={dateFilter}
-            setDateFilter={setDateFilter}
-            ratingFilter={ratingFilter}
-            setRatingFilter={setRatingFilter}
-            viewType={viewType}
-            setViewType={setViewType}
-          />
+          <div className="flex flex-wrap items-center gap-4 mb-6">
+            <ReviewFilters 
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              dateFilter={dateFilter}
+              setDateFilter={setDateFilter}
+              ratingFilter={ratingFilter}
+              setRatingFilter={setRatingFilter}
+              viewType={viewType}
+              setViewType={setViewType}
+            />
+            
+            {/* Language filter */}
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="gap-2 h-9 px-3"
+                >
+                  <Languages size={16} />
+                  {languageNames[languageFilter] || languageFilter}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-60 p-2">
+                <div className="space-y-1">
+                  {languages.map((lang) => (
+                    <Button
+                      key={lang}
+                      variant={languageFilter === lang ? "default" : "ghost"}
+                      className="w-full justify-start"
+                      onClick={() => setLanguageFilter(lang)}
+                    >
+                      {languageNames[lang] || lang}
+                    </Button>
+                  ))}
+                </div>
+              </PopoverContent>
+            </Popover>
+          </div>
           
           {/* Loading state */}
           {isLoading && (

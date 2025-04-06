@@ -16,6 +16,9 @@ export interface Review {
   responded: boolean;
   profile_url?: string;
   photo?: string;
+  idioma?: string;
+  traducida?: boolean;
+  reseña_traducida?: string;
 }
 
 export interface ReviewStats {
@@ -66,6 +69,9 @@ export function useReviews() {
           responded: false, // Could have a column for this in the future
           profile_url: item.url_perfil || '',
           photo: item.foto_autor || '',
+          idioma: item.idioma || 'es',
+          traducida: item.traducida === 'true',
+          reseña_traducida: item.traducida === 'true' ? item.reseña_traducida : ''
         }));
         
         console.log("Formatted reviews:", formattedReviews);
