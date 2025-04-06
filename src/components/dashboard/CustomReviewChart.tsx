@@ -25,9 +25,11 @@ const CustomReviewChart = () => {
         <div className="flex items-center text-sm text-[#2F2F4C]/70">
           <div className="flex items-center mr-4">
             <Star size={16} className="text-[#FFCE85] fill-[#FFCE85] mr-1" />
+            <span>Puntuación media</span>
           </div>
           <div className="flex items-center">
             <div className="h-3 w-3 rounded-full bg-[#02B1C4] mr-1"></div>
+            <span>Número de reseñas</span>
           </div>
         </div>
       </CardHeader>
