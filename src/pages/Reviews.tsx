@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -81,11 +80,9 @@ const Reviews = () => {
 
   // Function to handle responding to a review
   const handleRespond = (id: number, response: string) => {
-    // In the future, here we could save the response in Supabase
     const updatedReviews = reviews.map(review => 
       review.id === id ? { ...review, responded: true } : review
     );
-    // This would be updated to use a state update function from the hook
   };
 
   // Update the view type based on tab selection
@@ -102,18 +99,16 @@ const Reviews = () => {
           <ReviewHeader />
           
           {/* Filters section */}
-          <div className="flex flex-wrap items-center gap-4 mb-6">
-            <ReviewFilters 
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              dateFilter={dateFilter}
-              setDateFilter={setDateFilter}
-              ratingFilter={ratingFilter}
-              setRatingFilter={setRatingFilter}
-              viewType={viewType}
-              setViewType={setViewType}
-            />
-          </div>
+          <ReviewFilters 
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            dateFilter={dateFilter}
+            setDateFilter={setDateFilter}
+            ratingFilter={ratingFilter}
+            setRatingFilter={setRatingFilter}
+            viewType={viewType}
+            setViewType={setViewType}
+          />
           
           <ReviewContent 
             isLoading={isLoading}

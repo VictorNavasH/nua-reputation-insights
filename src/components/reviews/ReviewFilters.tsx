@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Search, Calendar, Star, LayoutGrid, Table as TableIcon } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
@@ -28,7 +28,7 @@ const ReviewFilters = ({
   setViewType
 }: ReviewFiltersProps) => {
   return (
-    <Card className="mb-6">
+    <div className="w-full bg-white rounded-lg shadow-sm mb-6">
       <CardContent className="p-4">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Search input */}
@@ -98,7 +98,7 @@ const ReviewFilters = ({
           </div>
         </div>
       </CardContent>
-    </Card>
+    </div>
   );
 };
 
