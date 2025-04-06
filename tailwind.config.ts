@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -63,7 +62,6 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				},
-				// NÜA custom colors
 				nua: {
 					navy: '#2F2F4C',
 					blue: {
@@ -81,14 +79,13 @@ export default {
 					orange: '#FFCE85',
 					red: '#FE6D73',
 					darkblue: '#364F6B',
-					// Second palette
 					blue2: '#227C9D',
 					teal2: '#17C3B2',
 					orange2: '#FFCB77',
 					white: '#FEF9EF',
 					red2: '#FE6D73',
-					// New custom color
-					mint: '#98f5e1'
+					mint: '#98f5e1',
+					lightblue: '#E5F3F5'
 				}
 			},
 			fontFamily: {
@@ -122,4 +119,3 @@ export default {
 	},
 	plugins: [require("tailwindcss-animate")],
 } satisfies Config;
-

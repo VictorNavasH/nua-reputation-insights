@@ -70,7 +70,7 @@ const SentimentAnalysis = () => {
               Basado en las últimas 143 reseñas, el sentimiento general es:
             </p>
             
-            <div className="p-4 bg-nua-mint rounded-lg">
+            <div className="p-4 bg-[#E5F3F5] rounded-lg">
               <h4 className="font-medium text-nua-navy mb-2">Fortalezas destacadas</h4>
               <ul className="list-disc list-inside text-sm space-y-1">
                 <li>Los clientes comentan que la tecnología es impresionante</li>
@@ -102,4 +102,3 @@ const SentimentAnalysis = () => {
 };
 
 export default SentimentAnalysis;
-
