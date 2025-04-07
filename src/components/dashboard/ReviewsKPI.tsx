@@ -5,7 +5,7 @@ import { Star, MessageSquare, TrendingUp, BarChart3, ChevronUp, ArrowUp, ArrowDo
 import { useDashboard } from '@/contexts/DashboardContext';
 
 const ReviewsKPI = () => {
-  const { kpiData } = useDashboard();
+  const { kpiData, isLoading } = useDashboard();
   const [showTrends, setShowTrends] = useState({
     averageRating: true,
     totalReviews: true,
@@ -100,7 +100,9 @@ const ReviewsKPI = () => {
               </div>
               <div>
                 <p className="text-sm text-[#2F2F4C]/70">Este mes</p>
-                <p className="text-2xl font-bold text-[#2F2F4C]">{kpiData.totalReviews}</p>
+                <p className="text-2xl font-bold text-[#2F2F4C]">
+                  {isLoading ? "..." : kpiData.totalReviews}
+                </p>
               </div>
             </div>
             <div 
@@ -135,7 +137,9 @@ const ReviewsKPI = () => {
               </div>
               <div>
                 <p className="text-sm text-[#2F2F4C]/70">Porcentaje</p>
-                <p className="text-2xl font-bold text-[#2F2F4C]">{kpiData.positivePercentage}%</p>
+                <p className="text-2xl font-bold text-[#2F2F4C]">
+                  {isLoading ? "..." : kpiData.positivePercentage}%
+                </p>
               </div>
             </div>
             <div 

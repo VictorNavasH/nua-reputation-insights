@@ -11,13 +11,11 @@ import SentimentAnalysis from '../components/dashboard/SentimentAnalysis';
 import RatingGoalCard from '../components/dashboard/RatingGoalCard';
 import { Separator } from '@/components/ui/separator';
 import { useDashboard } from '@/contexts/DashboardContext';
+import { RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 const Index = () => {
-  const { kpiData } = useDashboard();
-  
-  // Valores para el objetivo de puntuación media
-  const currentRating = 4.4;
-  const targetRating = 4.5;
+  const { isLoading, refreshData } = useDashboard();
   
   return (
     <div className="min-h-screen flex flex-col bg-[#E8EDF3]">
@@ -25,7 +23,7 @@ const Index = () => {
       
       <main className="flex-grow px-6 py-8">
         <div className="max-w-7xl mx-auto space-y-8">
-          {/* Brand Logo */}
+          {/* Brand Logo and Refresh Button */}
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center">
               <img 
@@ -43,6 +41,16 @@ const Index = () => {
               />
               <h1 className="text-2xl font-bold text-[#2F2F4C]">Dashboard de Reseñas</h1>
             </div>
+            
+            <Button 
+              variant="outline" 
+              onClick={refreshData} 
+              disabled={isLoading}
+              className="flex items-center gap-2"
+            >
+              <RefreshCw size={16} className={isLoading ? "animate-spin" : ""} />
+              <span>{isLoading ? "Actualizando..." : "Actualizar datos"}</span>
+            </Button>
           </div>
           
           {/* KPI Cards */}
@@ -51,11 +59,7 @@ const Index = () => {
           {/* Progress Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <ProgressCard />
-            <RatingGoalCard 
-              currentRating={currentRating} 
-              targetRating={targetRating} 
-              totalReviews={kpiData.totalReviews || 0} 
-            />
+            <RatingGoalCard />
           </div>
           
           {/* Custom Review Chart */}

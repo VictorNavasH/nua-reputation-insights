@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { 
   ReviewData, 
@@ -10,6 +9,9 @@ import {
   WordCloudItem, 
   ApiConfig 
 } from '../types/dashboard';
+import { supabase } from "@/integrations/supabase/client";
+import { useReviews } from '@/hooks/useReviews';
+import { toast } from '@/components/ui/use-toast';
 
 // Datos de ejemplo para estado inicial
 const initialKpiData: KpiData = {
@@ -88,41 +90,7 @@ export const DashboardProvider = ({ children }: DashboardProviderProps) => {
   const [sentimentData, setSentimentData] = useState<SentimentData>(initialSentimentData);
   const [progressData, setProgressData] = useState<ProgressData>(initialProgressData);
   const [chartData, setChartData] = useState<ReviewChartData>(initialChartData);
-  const [featuredReviews, setFeaturedReviews] = useState<ReviewData[]>([
-    {
-      id: 1,
-      author: 'María García',
-      date: '23 Jun 2023',
-      text: 'La atención fue excelente y la comida deliciosa. La tecnología de autoservicio es una maravilla, ¡nunca había visto algo así en un restaurante!',
-      rating: 5,
-      source: 'Google',
-      replied: true,
-      sentiment: 'positive',
-      emoji: '🤩'
-    },
-    {
-      id: 2,
-      author: 'Carlos Pérez',
-      date: '18 Jun 2023',
-      text: 'La fusión de sabores es increíble. El ambiente es muy moderno y agradable. Definitivamente volveré con amigos.',
-      rating: 4,
-      source: 'TripAdvisor',
-      replied: false,
-      sentiment: 'positive',
-      emoji: '😊'
-    },
-    {
-      id: 3,
-      author: 'Laura Sánchez',
-      date: '15 Jun 2023',
-      text: 'Me encantó el concepto del restaurante. La comida está bien, pero el servicio podría mejorar un poco. Aún así, recomendable.',
-      rating: 3,
-      source: 'Yelp',
-      replied: false,
-      sentiment: 'neutral',
-      emoji: '🙂'
-    }
-  ]);
+  const [featuredReviews, setFeaturedReviews] = useState<ReviewData[]>([]);
   
   const [goals, setGoals] = useState<GoalData[]>([
     {
@@ -195,15 +163,74 @@ export const DashboardProvider = ({ children }: DashboardProviderProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Simulación de carga inicial de datos
+  const { reviews, isLoading: reviewsLoading, error: reviewsError } = useReviews();
+
+  const calculateSentiment = (rating: number): 'positive' | 'neutral' | 'negative' => {
+    if (rating >= 4) return 'positive';
+    if (rating >= 3) return 'neutral';
+    return 'negative';
+  };
+
+  const transformReviews = (reviews: any[]): ReviewData[] => {
+    return reviews.map(review => ({
+      id: review.id,
+      author: review.customer || 'Cliente anónimo',
+      date: review.date,
+      text: review.review || review.reseña || '',
+      rating: review.rating || review.puntuacion || 0,
+      source: 'Google',
+      replied: review.responded || false,
+      sentiment: calculateSentiment(review.rating || review.puntuacion || 0),
+      emoji: review.rating >= 4 ? '😊' : review.rating >= 3 ? '🙂' : '😕'
+    }));
+  };
+
+  useEffect(() => {
+    if (reviews.length > 0 && !reviewsLoading) {
+      const transformedReviews = transformReviews(reviews);
+      setFeaturedReviews(transformedReviews.slice(0, 3));
+      
+      const totalReviews = transformedReviews.length;
+      
+      const totalRating = transformedReviews.reduce((sum, review) => sum + review.rating, 0);
+      const averageRating = totalRating / totalReviews;
+      
+      const sentiments = transformedReviews.map(review => calculateSentiment(review.rating));
+      const positiveCount = sentiments.filter(s => s === 'positive').length;
+      const neutralCount = sentiments.filter(s => s === 'neutral').length;
+      const negativeCount = sentiments.filter(s => s === 'negative').length;
+      
+      const positivePercentage = Math.round((positiveCount / totalReviews) * 100);
+      const neutralPercentage = Math.round((neutralCount / totalReviews) * 100);
+      const negativePercentage = Math.round((negativeCount / totalReviews) * 100);
+
+      setKpiData(prev => ({
+        ...prev,
+        averageRating: parseFloat(averageRating.toFixed(1)),
+        totalReviews,
+        positivePercentage,
+        monthlyReviews: totalReviews
+      }));
+      
+      setSentimentData({
+        positive: positivePercentage,
+        neutral: neutralPercentage,
+        negative: negativePercentage
+      });
+      
+      setProgressData(prev => ({
+        ...prev,
+        current: totalReviews,
+        percentage: Math.min(100, Math.round((totalReviews / prev.target) * 100))
+      }));
+    }
+  }, [reviews, reviewsLoading]);
+
   useEffect(() => {
     const loadInitialData = async () => {
       try {
         setIsLoading(true);
-        // Aquí iría la lógica para cargar datos desde API/Supabase
-        // Por ahora solo simulamos un delay
         await new Promise(resolve => setTimeout(resolve, 800));
-        // Los datos iniciales ya están configurados en los estados
         setIsLoading(false);
       } catch (err) {
         setError('Error loading dashboard data');
@@ -214,36 +241,76 @@ export const DashboardProvider = ({ children }: DashboardProviderProps) => {
     loadInitialData();
   }, []);
 
-  // Función para actualizar datos
   const refreshData = async () => {
     try {
       setIsLoading(true);
       setError(null);
       
-      // Aquí iría la lógica para recargar datos desde API/Supabase
-      await new Promise(resolve => setTimeout(resolve, 800));
+      const { data, error } = await supabase
+        .from('reseñas_actuales')
+        .select('*')
+        .order('fecha', { ascending: false });
       
-      // Por ahora solo actualizamos algunos valores aleatorios para simular
-      setKpiData(prev => ({
-        ...prev,
-        monthlyReviews: prev.monthlyReviews + Math.floor(Math.random() * 5),
-        comparedToPrevious: {
-          ...prev.comparedToPrevious,
-          monthlyReviews: { 
-            value: 3 + Math.floor(Math.random() * 3), 
-            trend: Math.random() > 0.5 ? 'up' : 'down' 
-          }
-        }
-      }));
+      if (error) {
+        throw error;
+      }
+      
+      if (data && data.length > 0) {
+        const transformedReviews = transformReviews(data);
+        setFeaturedReviews(transformedReviews.slice(0, 3));
+        
+        const totalReviews = transformedReviews.length;
+        
+        const totalRating = transformedReviews.reduce((sum, review) => sum + review.rating, 0);
+        const averageRating = totalRating / totalReviews;
+        
+        const sentiments = transformedReviews.map(review => calculateSentiment(review.rating));
+        const positiveCount = sentiments.filter(s => s === 'positive').length;
+        const neutralCount = sentiments.filter(s => s === 'neutral').length;
+        const negativeCount = sentiments.filter(s => s === 'negative').length;
+        
+        const positivePercentage = Math.round((positiveCount / totalReviews) * 100);
+        const neutralPercentage = Math.round((neutralCount / totalReviews) * 100);
+        const negativePercentage = Math.round((negativeCount / totalReviews) * 100);
 
+        setKpiData(prev => ({
+          ...prev,
+          averageRating: parseFloat(averageRating.toFixed(1)),
+          totalReviews,
+          positivePercentage,
+          monthlyReviews: totalReviews
+        }));
+        
+        setSentimentData({
+          positive: positivePercentage,
+          neutral: neutralPercentage,
+          negative: negativePercentage
+        });
+        
+        setProgressData(prev => ({
+          ...prev,
+          current: totalReviews,
+          percentage: Math.min(100, Math.round((totalReviews / prev.target) * 100))
+        }));
+        
+        toast({
+          title: "Datos actualizados",
+          description: `Se han cargado ${data.length} reseñas.`,
+        });
+      }
+      
       setIsLoading(false);
     } catch (err) {
       setError('Error refreshing dashboard data');
+      toast({
+        title: "Error",
+        description: "No se pudieron actualizar los datos del dashboard.",
+        variant: "destructive"
+      });
       setIsLoading(false);
     }
   };
 
-  // Función para actualizar configuración de API
   const updateApiConfig = (config: ApiConfig) => {
     setApiConfigs(prev => 
       prev.map(c => c.name === config.name ? config : c)
@@ -260,8 +327,8 @@ export const DashboardProvider = ({ children }: DashboardProviderProps) => {
       goals,
       wordCloudData,
       apiConfigs,
-      isLoading,
-      error,
+      isLoading: isLoading || reviewsLoading,
+      error: error || reviewsError,
       refreshData,
       updateApiConfig
     }}>

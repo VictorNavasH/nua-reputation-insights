@@ -6,7 +6,7 @@ import { useDashboard } from '@/contexts/DashboardContext';
 import { TrendingUp } from 'lucide-react';
 
 const ProgressCard = () => {
-  const { progressData } = useDashboard();
+  const { progressData, isLoading } = useDashboard();
   
   // Determinar el color según el porcentaje de avance
   const getProgressColor = () => {
@@ -29,7 +29,9 @@ const ProgressCard = () => {
         <div className="mt-2">
           <div className="flex justify-between items-center mb-2">
             <span className="text-sm text-[#2F2F4C]/70">Reseñas obtenidas</span>
-            <span className="text-sm font-semibold text-[#2F2F4C]">{progressData.current}/{progressData.target}</span>
+            <span className="text-sm font-semibold text-[#2F2F4C]">
+              {isLoading ? "..." : `${progressData.current}/${progressData.target}`}
+            </span>
           </div>
           
           <div className="h-3 bg-[#E8EDF3] rounded-full overflow-hidden">
@@ -45,7 +47,11 @@ const ProgressCard = () => {
           <div className="mt-3 flex justify-between items-center text-xs">
             <span className="font-medium text-[#2F2F4C]">{progressData.percentage}% completado</span>
             <span className="font-medium text-[#2F2F4C]/70">
-              Faltan {progressData.target - progressData.current} reseñas para alcanzar el objetivo
+              {isLoading ? "Cargando..." : 
+                progressData.current >= progressData.target 
+                  ? "¡Objetivo alcanzado!" 
+                  : `Faltan ${progressData.target - progressData.current} reseñas para alcanzar el objetivo`
+              }
             </span>
           </div>
         </div>

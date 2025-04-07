@@ -1,8 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from "@/integrations/supabase/client";
-import { formatDate, determineSentiment } from '@/utils/reviewUtils';
-import { toast } from 'sonner';
+import { toast } from '@/components/ui/use-toast';
 import { Review, ReviewStatsTimeSeries } from '@/types/reviews';
 import { generateReviewStats } from '@/utils/reviewStatsGenerator';
 
@@ -37,14 +36,18 @@ export function useReviews() {
         
         // Transform the data to match the Review interface
         const formattedReviews = data.map((item: any, index: number) => ({
-          id: index + 1,
+          id: item.UUID || index + 1,
           UUID: item.UUID || '',
           customer: item.nombre || 'Cliente anónimo',
-          date: formatDate(item.fecha),
+          date: item.fecha ? new Date(item.fecha).toLocaleDateString('es-ES', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          }) : '',
           rating: item.puntuacion || 0,
           review: item.reseña || '',
           sentiment: determineSentiment(item.puntuacion || 0),
-          responded: false, // Could have a column for this in the future
+          responded: false, // Podemos actualizarlo en el futuro
           profile_url: item.url_perfil || '',
           photo: item.foto_autor || '',
           idioma: item.idioma || 'es',
@@ -62,7 +65,10 @@ export function useReviews() {
       } catch (err) {
         console.error('Error al cargar reseñas:', err);
         setError('No se pudieron cargar las reseñas. Por favor, inténtelo de nuevo.');
-        toast.error('Error al cargar reseñas');
+        toast({
+          title: "Error",
+          description: "Error al cargar las reseñas de Google"
+        });
       } finally {
         setIsLoading(false);
       }
@@ -70,6 +76,13 @@ export function useReviews() {
     
     fetchReviews();
   }, []);
+
+  // Determinar sentimiento basado en puntuación
+  const determineSentiment = (rating: number): 'positive' | 'neutral' | 'negative' => {
+    if (rating >= 4) return 'positive';
+    if (rating >= 3) return 'neutral';
+    return 'negative';
+  };
 
   return { reviews, isLoading, error, reviewStats };
 }

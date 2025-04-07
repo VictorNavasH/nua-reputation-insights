@@ -13,6 +13,7 @@ export type Database = {
         Row: {
           fecha: string
           foto_autor: string
+          id: string
           idioma: string
           nombre: string
           puntuacion: number
@@ -27,6 +28,7 @@ export type Database = {
         Insert: {
           fecha: string
           foto_autor: string
+          id?: string
           idioma: string
           nombre: string
           puntuacion: number
@@ -41,6 +43,7 @@ export type Database = {
         Update: {
           fecha?: string
           foto_autor?: string
+          id?: string
           idioma?: string
           nombre?: string
           puntuacion?: number
