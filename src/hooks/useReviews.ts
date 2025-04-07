@@ -23,16 +23,32 @@ export function useReviews() {
       try {
         setIsLoading(true);
         
+        // Log conexión con Supabase
+        console.log("Intentando conectar con Supabase para obtener reseñas...");
+        
         const { data, error } = await supabase
           .from('reseñas_actuales')
           .select('*')
           .order('fecha', { ascending: false });
         
         if (error) {
+          console.error("Error de Supabase:", error);
           throw error;
         }
         
-        console.log("Raw data from Supabase:", data);
+        console.log("Respuesta de Supabase:", data);
+        
+        if (!data || data.length === 0) {
+          console.log("No se encontraron reseñas en la base de datos");
+          setReviews([]);
+          // Establecer estadísticas vacías
+          setReviewStats({
+            thirtyDays: [],
+            threeMonths: [],
+            year: []
+          });
+          return;
+        }
         
         // Transform the data to match the Review interface
         const formattedReviews = data.map((item: any, index: number) => ({
@@ -55,7 +71,7 @@ export function useReviews() {
           reseña_traducida: item.reseña_traducida || ''
         }));
         
-        console.log("Formatted reviews:", formattedReviews);
+        console.log("Reseñas formateadas:", formattedReviews);
         
         // Generate stats for charts
         const stats = generateReviewStats(formattedReviews);

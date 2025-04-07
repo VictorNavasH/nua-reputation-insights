@@ -57,33 +57,6 @@ export type Database = {
         }
         Relationships: []
       }
-      sync_status: {
-        Row: {
-          duplicadas: number | null
-          fecha_sync: string | null
-          fuente: string
-          id: number
-          mensaje: string | null
-          nuevas: number | null
-        }
-        Insert: {
-          duplicadas?: number | null
-          fecha_sync?: string | null
-          fuente: string
-          id?: number
-          mensaje?: string | null
-          nuevas?: number | null
-        }
-        Update: {
-          duplicadas?: number | null
-          fecha_sync?: string | null
-          fuente?: string
-          id?: number
-          mensaje?: string | null
-          nuevas?: number | null
-        }
-        Relationships: []
-      }
     }
     Views: {
       reseñas_actuales: {
