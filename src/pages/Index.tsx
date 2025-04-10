@@ -26,19 +26,6 @@ const Index = () => {
           {/* Brand Logo and Refresh Button */}
           <div className="flex justify-between items-center mb-4">
             <div className="flex items-center">
-              <img 
-                src="/logo-nua.png" 
-                alt="NÜA Logo" 
-                className="h-12 mr-4" 
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.onerror = null;
-                  target.src = '/placeholder.svg';
-                  target.classList.add('p-2');
-                  target.classList.add('bg-white');
-                  target.classList.add('rounded');
-                }}
-              />
               <h1 className="text-2xl font-bold text-[#2F2F4C]">Dashboard de Reseñas</h1>
             </div>
             
